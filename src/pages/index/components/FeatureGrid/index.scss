@@ -3,11 +3,11 @@
 .section-header {
   display: flex;
   align-items: center;
-  margin: 32px 0 16px;
+  margin: $spacing-3xl 0 $spacing-lg;
 
   .section-title {
-    font-size: 10px;
-    letter-spacing: 2px;
+    font-size: $font-size-sm;
+    letter-spacing: $letter-spacing-md;
     color: $text-muted;
     text-transform: uppercase;
   }
@@ -15,22 +15,22 @@
   .section-line {
     flex: 1;
     height: 1px;
-    background: rgba(255, 255, 255, 0.25);
-    margin-left: 16px;
+    background: $border-line;
+    margin-left: $spacing-lg;
   }
 }
 
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: $spacing-md;
 
   .feature-card {
     background: $bg-card-light;
     border: 1px solid $border-light;
-    border-radius: 16px;
-    padding: 20px;
-    transition: all 0.2s;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+    transition: all $transition-fast;
     cursor: pointer;
 
     &:active {
@@ -39,21 +39,21 @@
     }
 
     .feature-icon {
-      margin-bottom: 12px;
+      margin-bottom: $spacing-md;
     }
 
     .feature-title {
       display: block;
-      font-size: 14px;
-      font-weight: 300;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-normal;
       color: $text-primary;
       margin-bottom: 2px;
     }
 
     .feature-subtitle {
       display: block;
-      font-size: 8px;
-      letter-spacing: 1px;
+      font-size: $font-size-xs;
+      letter-spacing: $letter-spacing-sm;
       color: $text-muted;
       text-transform: uppercase;
     }

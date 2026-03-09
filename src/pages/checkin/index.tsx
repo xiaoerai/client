@@ -15,7 +15,6 @@ function Checkin() {
   const [form, setForm] = useState<CheckinFormData>({
     name: '',
     idNumber: '',
-    phone: '',
   })
   const [idFront, setIdFront] = useState('')
   const [isRecognizing, setIsRecognizing] = useState(false)

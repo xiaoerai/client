@@ -1,5 +1,4 @@
-import { Input as TaroInput, View, Text } from '@tarojs/components'
-import { ITouchEvent } from '@tarojs/components/types/common'
+import { View, Text } from '@tarojs/components'
 import './index.scss'
 
 interface InputProps {
@@ -28,31 +27,23 @@ function Input({
   suffix,
   onSuffixClick,
 }: InputProps) {
-  const handleInput = (e: ITouchEvent & { detail: { value: string } }) => {
-    onChange(e.detail.value)
-  }
-
-  // 阻止事件冒泡，防止 modal overlay 捕获点击
-  const stopPropagation = (e: ITouchEvent) => {
-    e.stopPropagation()
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value)
   }
 
   return (
-    <View
-      className={`input-wrapper ${className}`}
-      onClick={stopPropagation}
-    >
+    <View className={`input-wrapper ${className}`}>
       {label && <Text className="input-label">{label}</Text>}
       <View className="input-container">
-        <TaroInput
+        <input
           className="input-field"
-          type={type === 'password' ? 'text' : type}
-          password={type === 'password'}
+          type={type === 'number' ? 'tel' : type}
+          inputMode={type === 'number' ? 'numeric' : undefined}
           value={value}
           placeholder={placeholder}
-          maxlength={maxLength}
+          maxLength={maxLength}
           disabled={disabled}
-          onInput={handleInput}
+          onChange={handleChange}
         />
         {suffix && (
           <View className="input-suffix" onClick={onSuffixClick}>

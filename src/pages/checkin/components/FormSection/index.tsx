@@ -5,7 +5,6 @@ import './index.scss'
 interface FormData {
   name: string
   idNumber: string
-  phone: string
 }
 
 interface FormSectionProps {
@@ -48,18 +47,6 @@ export default function FormSection({ form, onChange }: FormSectionProps) {
           placeholder={t('checkin.idPlaceholder')}
           value={form.idNumber}
           onInput={handleInput('idNumber')}
-        />
-      </div>
-
-      <div className="form-item">
-        <span className="form-label">{t('guestInfo.phone')}</span>
-        <input
-          className="form-input"
-          type="tel"
-          placeholder={t('checkin.phonePlaceholder')}
-          value={form.phone}
-          maxLength={11}
-          onInput={handleInput('phone')}
         />
       </div>
     </div>
