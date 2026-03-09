@@ -21,6 +21,8 @@
   border-radius: $radius-lg;
   border: 1px solid $border-color;
   overflow: hidden;
+  position: relative;
+  z-index: 1001; // 高于 overlay
 }
 
 .modal-header {
@@ -63,42 +65,18 @@
 // Step 1: 手机号验证
 .step-phone {
   padding: $spacing-lg;
-}
+  position: relative;
+  z-index: 10; // 确保在 overlay 之上
 
-.form-group {
-  margin-bottom: $spacing-lg;
-}
-
-.form-label {
-  display: block;
-  font-size: $font-size-sm;
-  color: $text-muted;
-  margin-bottom: $spacing-sm;
-  letter-spacing: $letter-spacing-sm;
-}
-
-.form-input {
-  width: 100%;
-  height: $input-height;
-  background: $bg-card-light;
-  border: 1px solid $border-color;
-  border-radius: $radius-sm;
-  padding: 0 $spacing-md;
-  font-size: $font-size-lg;
-  color: $text-primary;
-
-  &::placeholder {
-    color: $text-muted;
+  .input-wrapper {
+    margin-bottom: $spacing-lg;
+    position: relative;
+    z-index: 11;
   }
-}
 
-.code-row {
-  display: flex;
-  gap: $spacing-sm;
-}
-
-.code-input {
-  flex: 1;
+  .btn-primary {
+    margin-top: $spacing-sm;
+  }
 }
 
 .code-btn {
@@ -122,30 +100,6 @@
   &.disabled {
     border-color: $border-color;
     color: $text-muted;
-    pointer-events: none;
-  }
-}
-
-.submit-btn {
-  width: 100%;
-  height: $button-height;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: $accent;
-  border-radius: $radius-sm;
-  font-size: $font-size-lg;
-  font-weight: $font-weight-medium;
-  color: $text-dark;
-  margin-top: $spacing-xl;
-  cursor: pointer;
-
-  &:active {
-    opacity: 0.9;
-  }
-
-  &.loading {
-    opacity: 0.7;
     pointer-events: none;
   }
 }

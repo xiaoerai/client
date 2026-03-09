@@ -1,0 +1,73 @@
+@use '../../styles/variables' as *;
+
+.input-wrapper {
+  width: 100%;
+}
+
+.input-label {
+  display: block;
+  font-size: $font-size-sm;
+  color: $text-muted;
+  margin-bottom: $spacing-sm;
+  letter-spacing: $letter-spacing-sm;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  width: 100%;
+}
+
+.input-field {
+  flex: 1;
+  width: 100%;
+  min-width: 0; // 防止 flex 子元素溢出
+  height: $input-height;
+  line-height: $input-height;
+  background: $bg-card-light;
+  border: 1px solid $border-color;
+  border-radius: $radius-sm;
+  padding: 0 $spacing-md;
+  font-size: $font-size-lg;
+  color: $text-primary;
+  box-sizing: border-box;
+  -webkit-appearance: none; // 移除 iOS 默认样式
+  appearance: none;
+  cursor: text; // H5 模式下显示正确的光标
+  pointer-events: auto; // 确保可以点击
+  position: relative;
+  z-index: 1;
+
+  // Taro Input 内部 input 元素
+  input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: inherit;
+    color: inherit;
+    line-height: inherit;
+    padding: 0;
+    margin: 0;
+  }
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus {
+    border-color: $accent;
+    outline: none;
+  }
+
+  &[disabled] {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+.input-suffix {
+  flex-shrink: 0;
+}

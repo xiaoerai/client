@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
-import { View, Text, Input } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import Input from '../../../../components/Input'
 import { SelectedOrder } from '../../../../hooks/useOrderAuth'
 import './index.scss'
 
@@ -63,17 +64,17 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
       // TODO: 调用后端 API 获取订单
       // const result = await api.getOrders(phoneNum)
 
-      // 模拟数据
+      // 模拟订单数据
       const mockOrders: Order[] = [
         {
-          orderId: 'order_001',
-          roomNumber: '301',
+          orderId: 'ORD20260309001',
+          roomNumber: '悦享大床房 301',
           checkInDate: '2026-03-09',
           checkOutDate: '2026-03-11',
         },
         {
-          orderId: 'order_002',
-          roomNumber: '502',
+          orderId: 'ORD20260309002',
+          roomNumber: '豪华双床房 502',
           checkInDate: '2026-03-09',
           checkOutDate: '2026-03-10',
         },
@@ -95,6 +96,13 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
     }
   }
 
+  // ============ 测试用假数据 ============
+  // 测试手机号: 13800138000
+  // 测试验证码: 1234
+  const MOCK_PHONE = '13800138000'
+  const MOCK_CODE = '1234'
+  // =====================================
+
   // 发送验证码
   const handleSendCode = useCallback(async () => {
     if (phone.length !== 11) {
@@ -107,7 +115,7 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
       // TODO: 调用后端 API 发送验证码
       // await api.sendSmsCode(phone)
       setCountdown(60)
-      Taro.showToast({ title: '验证码已发送', icon: 'success' })
+      Taro.showToast({ title: `验证码已发送（测试: ${MOCK_CODE}）`, icon: 'none', duration: 3000 })
     } catch {
       Taro.showToast({ title: '发送失败，请重试', icon: 'none' })
     }
@@ -126,14 +134,16 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
 
     setLoading(true)
     try {
-      // TODO: 调用后端 API 验证验证码
-      // await api.verifySmsCode(phone, code)
-
-      // 验证通过，存储手机号
-      Taro.setStorageSync('verifiedPhone', phone)
-
-      // 查询订单
-      await fetchOrders(phone)
+      // 模拟验证：手机号 13800138000，验证码 1234
+      if (phone === MOCK_PHONE && code === MOCK_CODE) {
+        // 验证通过，存储手机号
+        Taro.setStorageSync('verifiedPhone', phone)
+        // 查询订单
+        await fetchOrders(phone)
+      } else {
+        Taro.showToast({ title: '验证码错误（测试: 1234）', icon: 'none' })
+        setLoading(false)
+      }
     } catch {
       Taro.showToast({ title: '验证失败，请重试', icon: 'none' })
       setLoading(false)
@@ -186,40 +196,34 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
           </View>
         ) : step === 'phone' ? (
           <View className="step-phone">
-            <View className="form-group">
-              <Text className="form-label">手机号</Text>
-              <Input
-                className="form-input"
-                type="number"
-                placeholder="请输入预订时填写的手机号"
-                maxlength={11}
-                value={phone}
-                onInput={(e) => setPhone(e.detail.value)}
-              />
-            </View>
+            <Input
+              label="手机号"
+              type="number"
+              placeholder="请输入预订时填写的手机号"
+              maxLength={11}
+              value={phone}
+              onChange={setPhone}
+            />
 
-            <View className="form-group">
-              <Text className="form-label">验证码</Text>
-              <View className="code-row">
-                <Input
-                  className="form-input code-input"
-                  type="number"
-                  placeholder="请输入验证码"
-                  maxlength={6}
-                  value={code}
-                  onInput={(e) => setCode(e.detail.value)}
-                />
+            <Input
+              label="验证码"
+              type="number"
+              placeholder="请输入验证码"
+              maxLength={6}
+              value={code}
+              onChange={setCode}
+              suffix={
                 <View
                   className={`code-btn ${countdown > 0 ? 'disabled' : ''}`}
                   onClick={handleSendCode}
                 >
                   {countdown > 0 ? `${countdown}s` : '获取验证码'}
                 </View>
-              </View>
-            </View>
+              }
+            />
 
             <View
-              className={`submit-btn ${loading ? 'loading' : ''}`}
+              className={`btn-primary ${loading ? 'loading' : ''}`}
               onClick={handleVerify}
             >
               {loading ? '验证中...' : '下一步'}
@@ -238,7 +242,7 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
                   className="order-card"
                   onClick={() => handleSelectOrder(order)}
                 >
-                  <View className="order-room">{order.roomNumber}室</View>
+                  <View className="order-room">{order.roomNumber}</View>
                   <View className="order-date">
                     {formatDate(order.checkInDate)} - {formatDate(order.checkOutDate)}
                   </View>

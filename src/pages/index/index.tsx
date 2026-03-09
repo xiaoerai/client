@@ -34,7 +34,7 @@ function Index() {
 
   const handleFeatureClick = (id: string) => {
     const routeMap: Record<string, () => void> = {
-      checkin: () => navigateTo('checkin'),
+      checkin: () => setShowCheckInModal(true), // 打开弹窗
       orders: () => navigateTo('orders'),
       guide: () => navigateTo('guide'),
       service: () => navigateTo('service'),
@@ -43,6 +43,11 @@ function Index() {
     }
 
     routeMap[id]?.()
+  }
+
+  const handleSelectOrder = () => {
+    setShowCheckInModal(false)
+    navigateTo('checkin')
   }
 
   const handleShowPassword = () => {
@@ -84,6 +89,12 @@ function Index() {
       </div>
 
       <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
+
+      <CheckInModal
+        visible={showCheckInModal}
+        onClose={() => setShowCheckInModal(false)}
+        onSelectOrder={handleSelectOrder}
+      />
     </div>
   )
 }
