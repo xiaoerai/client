@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
-import { View, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import Input from '../../../../components/Input'
 import { SelectedOrder } from '../../../../hooks/useOrderAuth'
+import { useAppStore } from '../../../../stores/useAppStore'
 import './index.scss'
 
 interface Order {
@@ -21,6 +21,9 @@ interface CheckInModalProps {
 type Step = 'loading' | 'phone' | 'orders'
 
 function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
+  // 全局状态：已验证的手机号
+  const setUserPhone = useAppStore((state) => state.setUserPhone)
+
   const [step, setStep] = useState<Step>('loading')
   const [phone, setPhone] = useState('')
   const [code, setCode] = useState('')
@@ -39,17 +42,18 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
   // 打开弹窗时检查是否已有验证过的手机号
   useEffect(() => {
     if (visible) {
-      const verifiedPhone = Taro.getStorageSync('verifiedPhone')
-      if (verifiedPhone) {
+      // 从 store 获取最新值（不放入依赖，避免验证成功后重复 fetch）
+      const currentPhone = useAppStore.getState().userPhone
+      if (currentPhone) {
         // 已有手机号，直接查询订单
-        setPhone(verifiedPhone)
-        fetchOrders(verifiedPhone)
+        setPhone(currentPhone)
+        fetchOrders(currentPhone)
       } else {
         // 没有手机号，显示输入表单
         setStep('phone')
       }
     } else {
-      // 关闭时重置
+      // 关闭时重置 UI 状态（不动 store）
       setStep('loading')
       setPhone('')
       setCode('')
@@ -58,11 +62,11 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
   }, [visible])
 
   // 查询订单
-  const fetchOrders = async (phoneNum: string) => {
+  const fetchOrders = async (_phoneNum: string) => {
     setLoading(true)
     try {
       // TODO: 调用后端 API 获取订单
-      // const result = await api.getOrders(phoneNum)
+      // const result = await api.getOrders(_phoneNum)
 
       // 模拟订单数据
       const mockOrders: Order[] = [
@@ -136,8 +140,8 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
     try {
       // 模拟验证：手机号 13800138000，验证码 1234
       if (phone === MOCK_PHONE && code === MOCK_CODE) {
-        // 验证通过，存储手机号
-        Taro.setStorageSync('verifiedPhone', phone)
+        // 验证通过，更新全局状态（自动持久化到 storage）
+        setUserPhone(phone)
         // 查询订单
         await fetchOrders(phone)
       } else {
@@ -163,9 +167,8 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
     onSelectOrder(order)
   }
 
-  // 更换手机号
+  // 更换手机号（只切换UI，不修改 store，验证成功后才更新）
   const handleChangePhone = () => {
-    Taro.removeStorageSync('verifiedPhone')
     setPhone('')
     setCode('')
     setStep('phone')
@@ -181,21 +184,21 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
   if (!visible) return null
 
   return (
-    <View className="modal-overlay" onClick={onClose}>
-      <View className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <View className="modal-header">
-          <Text className="modal-title">
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <span className="modal-title">
             {step === 'loading' ? '加载中' : step === 'phone' ? '验证手机号' : '选择订单'}
-          </Text>
-          <View className="modal-close" onClick={onClose}>×</View>
-        </View>
+          </span>
+          <div className="modal-close" onClick={onClose}>×</div>
+        </div>
 
         {step === 'loading' ? (
-          <View className="step-loading">
-            <Text>正在查询订单...</Text>
-          </View>
+          <div className="step-loading">
+            <span>正在查询订单...</span>
+          </div>
         ) : step === 'phone' ? (
-          <View className="step-phone">
+          <div className="step-phone">
             <Input
               label="手机号"
               type="number"
@@ -213,46 +216,46 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
               value={code}
               onChange={setCode}
               suffix={
-                <View
+                <div
                   className={`code-btn ${countdown > 0 ? 'disabled' : ''}`}
                   onClick={handleSendCode}
                 >
                   {countdown > 0 ? `${countdown}s` : '获取验证码'}
-                </View>
+                </div>
               }
             />
 
-            <View
+            <div
               className={`btn-primary ${loading ? 'loading' : ''}`}
               onClick={handleVerify}
             >
               {loading ? '验证中...' : '下一步'}
-            </View>
-          </View>
+            </div>
+          </div>
         ) : (
-          <View className="step-orders">
-            <View className="back-link" onClick={handleChangePhone}>
+          <div className="step-orders">
+            <div className="back-link" onClick={handleChangePhone}>
               ← 更换手机号
-            </View>
+            </div>
 
-            <View className="orders-list">
+            <div className="orders-list">
               {orders.map((order) => (
-                <View
+                <div
                   key={order.orderId}
                   className="order-card"
                   onClick={() => handleSelectOrder(order)}
                 >
-                  <View className="order-room">{order.roomNumber}</View>
-                  <View className="order-date">
+                  <div className="order-room">{order.roomNumber}</div>
+                  <div className="order-date">
                     {formatDate(order.checkInDate)} - {formatDate(order.checkOutDate)}
-                  </View>
-                </View>
+                  </div>
+                </div>
               ))}
-            </View>
-          </View>
+            </div>
+          </div>
         )}
-      </View>
-    </View>
+      </div>
+    </div>
   )
 }
 

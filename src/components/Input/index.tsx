@@ -1,4 +1,3 @@
-import { View, Text } from '@tarojs/components'
 import './index.scss'
 
 interface InputProps {
@@ -32,9 +31,9 @@ function Input({
   }
 
   return (
-    <View className={`input-wrapper ${className}`}>
-      {label && <Text className="input-label">{label}</Text>}
-      <View className="input-container">
+    <div className={`input-wrapper ${className}`}>
+      {label && <span className="input-label">{label}</span>}
+      <div className="input-container">
         <input
           className="input-field"
           type={type === 'number' ? 'tel' : type}
@@ -46,12 +45,12 @@ function Input({
           onChange={handleChange}
         />
         {suffix && (
-          <View className="input-suffix" onClick={onSuffixClick}>
+          <div className="input-suffix" onClick={onSuffixClick}>
             {suffix}
-          </View>
+          </div>
         )}
-      </View>
-    </View>
+      </div>
+    </div>
   )
 }
 

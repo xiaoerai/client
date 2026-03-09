@@ -1,4 +1,6 @@
 import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
+import Taro from '@tarojs/taro'
 import i18n from 'i18next'
 
 export type Language = 'zh' | 'en'
@@ -49,26 +51,45 @@ const defaultHotelConfig: HotelConfig = {
   checkOutTime: '12:00',
 }
 
-export const useAppStore = create<AppState>((set) => ({
-  // 入住状态
-  currentStay: null,
-  setCurrentStay: (stay) => set({ currentStay: stay }),
-
-  // 民宿配置
-  hotelConfig: defaultHotelConfig,
-  setHotelConfig: (config) =>
-    set((state) => ({
-      hotelConfig: { ...state.hotelConfig, ...config },
-    })),
-
-  // 用户信息
-  userPhone: null,
-  setUserPhone: (phone) => set({ userPhone: phone }),
-
-  // 语言
-  language: 'zh',
-  setLanguage: (lang) => {
-    i18n.changeLanguage(lang)
-    set({ language: lang })
-  },
+// Taro Storage 适配器
+const taroStorage = createJSONStorage<AppState>(() => ({
+  getItem: (name) => Taro.getStorageSync(name) || null,
+  setItem: (name, value) => Taro.setStorageSync(name, value),
+  removeItem: (name) => Taro.removeStorageSync(name),
 }))
+
+export const useAppStore = create<AppState>()(
+  persist(
+    (set) => ({
+      // 入住状态
+      currentStay: null,
+      setCurrentStay: (stay) => set({ currentStay: stay }),
+
+      // 民宿配置
+      hotelConfig: defaultHotelConfig,
+      setHotelConfig: (config) =>
+        set((state) => ({
+          hotelConfig: { ...state.hotelConfig, ...config },
+        })),
+
+      // 用户信息
+      userPhone: null,
+      setUserPhone: (phone) => set({ userPhone: phone }),
+
+      // 语言
+      language: 'zh',
+      setLanguage: (lang) => {
+        i18n.changeLanguage(lang)
+        set({ language: lang })
+      },
+    }),
+    {
+      name: 'app-storage',
+      storage: taroStorage,
+      partialize: (state) => ({
+        userPhone: state.userPhone,
+        language: state.language,
+      }),
+    }
+  )
+)

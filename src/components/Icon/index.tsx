@@ -1,4 +1,3 @@
-import { View } from '@tarojs/components'
 import './index.scss'
 
 interface IconProps {
@@ -29,7 +28,7 @@ export default function Icon({ name, size = 24, color, className = '' }: IconPro
   const svgContent = icons[name] || ''
 
   return (
-    <View
+    <div
       className={`icon ${className}`}
       style={{
         width: `${size}px`,
