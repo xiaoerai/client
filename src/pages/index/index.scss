@@ -1,0 +1,49 @@
+@use '../../styles/variables' as *;
+
+.page {
+  min-height: 100vh;
+  background: $bg-dark;
+  color: $text-primary;
+  padding-bottom: 80px;
+}
+
+.main-content {
+  padding: 0 16px;
+  margin-top: -12px;
+  position: relative;
+  z-index: 1;
+}
+
+.quick-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 0;
+  margin-top: 24px;
+
+  .info-item {
+    text-align: center;
+
+    .info-label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: $text-muted;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .info-value {
+      display: block;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  .info-divider {
+    width: 1px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+  }
+}

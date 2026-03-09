@@ -1,0 +1,222 @@
+// ============================================
+// 民宿小程序 - 设计系统混入
+// ============================================
+
+@use 'sass:color';
+@use 'variables' as *;
+
+// ----------------------
+// 页面布局 Page Layout
+// ----------------------
+
+@mixin page-base {
+  min-height: 100vh;
+  background: $bg-dark;
+  color: $text-primary;
+  padding-bottom: $tab-bar-height;
+}
+
+@mixin page-content {
+  padding: 0 $page-padding;
+}
+
+// ----------------------
+// 卡片样式 Cards
+// ----------------------
+
+// 深色卡片（主卡片）
+@mixin card-dark {
+  background: linear-gradient(135deg, $bg-card 0%, #141210 100%);
+  border: 1px solid $border-color;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+}
+
+// 浅色卡片（功能卡片）
+@mixin card-light {
+  background: $bg-card-light;
+  border: 1px solid $border-light;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+}
+
+// ----------------------
+// 按钮样式 Buttons
+// ----------------------
+
+// 按钮基础
+@mixin btn-base {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: $button-height;
+  border-radius: $radius-md;
+  font-size: $font-size-lg;
+  cursor: pointer;
+  transition: all $transition-fast;
+}
+
+// 主按钮（金色）
+@mixin btn-primary {
+  @include btn-base;
+  background: $accent;
+  color: $text-dark;
+  font-weight: $font-weight-medium;
+
+  &:active {
+    background: color.adjust($accent, $lightness: -10%);
+  }
+}
+
+// 次要按钮（透明边框）
+@mixin btn-secondary {
+  @include btn-base;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $border-subtle;
+  color: $text-primary;
+
+  &:active {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+// 幽灵按钮（无背景）
+@mixin btn-ghost {
+  @include btn-base;
+  background: transparent;
+  color: $accent;
+
+  &:active {
+    background: rgba($accent, 0.1);
+  }
+}
+
+// ----------------------
+// 输入框样式 Inputs
+// ----------------------
+
+@mixin input-base {
+  width: 100%;
+  height: $input-height;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  padding: 0 $spacing-lg;
+  font-size: $font-size-lg;
+  color: $text-primary;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus {
+    border-color: $accent;
+    outline: none;
+  }
+}
+
+// ----------------------
+// 标签样式 Labels
+// ----------------------
+
+// 区域标题（如 SERVICES）
+@mixin section-label {
+  font-size: $font-size-sm;
+  letter-spacing: $letter-spacing-md;
+  color: $text-muted;
+  text-transform: uppercase;
+}
+
+// 金色标签（如 CURRENT STAY）
+@mixin accent-label {
+  font-size: $font-size-sm;
+  letter-spacing: $letter-spacing-md;
+  color: $accent;
+  text-transform: uppercase;
+}
+
+// 小标签（英文副标题）
+@mixin subtitle-label {
+  font-size: $font-size-xs;
+  letter-spacing: $letter-spacing-sm;
+  color: $text-muted;
+  text-transform: uppercase;
+}
+
+// ----------------------
+// 徽章样式 Badges
+// ----------------------
+
+@mixin badge-accent {
+  display: inline-block;
+  font-size: $font-size-sm;
+  letter-spacing: $letter-spacing-sm;
+  background: $accent;
+  color: $bg-dark;
+  padding: $spacing-xs $spacing-md;
+  border-radius: $radius-full;
+  font-weight: $font-weight-medium;
+}
+
+// ----------------------
+// 分隔线 Dividers
+// ----------------------
+
+@mixin divider-horizontal {
+  height: 1px;
+  background: $border-line;
+}
+
+@mixin divider-vertical {
+  width: 1px;
+  background: $border-strong;
+}
+
+// ----------------------
+// 图片上传区域 Upload
+// ----------------------
+
+@mixin upload-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed $border-light;
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:active {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: $accent;
+  }
+}
+
+// ----------------------
+// 导航栏 Navigation
+// ----------------------
+
+@mixin nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-lg;
+  padding-top: calc($spacing-lg + env(safe-area-inset-top));
+}
+
+// ----------------------
+// 底部固定按钮区 Bottom Action
+// ----------------------
+
+@mixin bottom-action {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: $bg-overlay;
+  backdrop-filter: blur(20px);
+  border-top: 1px solid $border-medium;
+  padding: $spacing-lg;
+  padding-bottom: calc($spacing-lg + $safe-area-bottom);
+}

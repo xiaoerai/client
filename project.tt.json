@@ -1,0 +1,13 @@
+{
+  "miniprogramRoot": "./",
+  "projectname": "client",
+  "description": "民宿自助入住小程序",
+  "appid": "touristappid",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram"
+}

@@ -1,0 +1,83 @@
+@use '../../../../styles/variables' as *;
+
+.stay-card {
+  background: linear-gradient(135deg, $bg-card 0%, #141210 100%);
+  border: 1px solid $border-color;
+  border-radius: 16px;
+  padding: 20px;
+
+  .stay-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+
+    .stay-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: $accent;
+      text-transform: uppercase;
+    }
+
+    .stay-badge {
+      font-size: 10px;
+      letter-spacing: 1px;
+      background: $accent;
+      color: $bg-dark;
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-weight: 500;
+    }
+  }
+
+  .stay-room {
+    display: block;
+    font-size: 18px;
+    font-weight: 300;
+    margin-bottom: 4px;
+  }
+
+  .stay-date {
+    display: block;
+    font-size: 13px;
+    color: $text-secondary;
+  }
+
+  .stay-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+
+    .btn-secondary,
+    .btn-primary {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 44px;
+      border-radius: 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+
+      .btn-text {
+        color: $text-primary;
+        white-space: nowrap;
+      }
+    }
+
+    .btn-primary {
+      background: $accent;
+
+      .btn-text-dark {
+        color: $bg-dark;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+    }
+  }
+}

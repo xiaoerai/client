@@ -1,0 +1,22 @@
+@use 'sass:color';
+@use '../../styles/variables' as *;
+
+.checkin-page {
+  min-height: 100vh;
+  background: $bg-dark;
+  color: $text-primary;
+  padding-bottom: 100px;
+}
+
+// 底部按钮
+.bottom-action {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid $border-medium;
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+}

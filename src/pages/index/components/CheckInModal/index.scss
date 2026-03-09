@@ -1,0 +1,198 @@
+@use '../../../../styles/variables' as *;
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: $spacing-lg;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 320px;
+  background: $bg-card;
+  border-radius: $radius-lg;
+  border: 1px solid $border-color;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-lg;
+  border-bottom: 1px solid $border-subtle;
+}
+
+.modal-title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-medium;
+  color: $text-primary;
+}
+
+.modal-close {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: $text-muted;
+  cursor: pointer;
+
+  &:active {
+    color: $text-primary;
+  }
+}
+
+// Loading 状态
+.step-loading {
+  padding: $spacing-3xl $spacing-lg;
+  text-align: center;
+  color: $text-muted;
+  font-size: $font-size-base;
+}
+
+// Step 1: 手机号验证
+.step-phone {
+  padding: $spacing-lg;
+}
+
+.form-group {
+  margin-bottom: $spacing-lg;
+}
+
+.form-label {
+  display: block;
+  font-size: $font-size-sm;
+  color: $text-muted;
+  margin-bottom: $spacing-sm;
+  letter-spacing: $letter-spacing-sm;
+}
+
+.form-input {
+  width: 100%;
+  height: $input-height;
+  background: $bg-card-light;
+  border: 1px solid $border-color;
+  border-radius: $radius-sm;
+  padding: 0 $spacing-md;
+  font-size: $font-size-lg;
+  color: $text-primary;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+}
+
+.code-row {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.code-input {
+  flex: 1;
+}
+
+.code-btn {
+  flex-shrink: 0;
+  min-width: 100px;
+  height: $input-height;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid $accent;
+  border-radius: $radius-sm;
+  font-size: $font-size-base;
+  color: $accent;
+  cursor: pointer;
+
+  &:active {
+    background: $accent-hover;
+  }
+
+  &.disabled {
+    border-color: $border-color;
+    color: $text-muted;
+    pointer-events: none;
+  }
+}
+
+.submit-btn {
+  width: 100%;
+  height: $button-height;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $accent;
+  border-radius: $radius-sm;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-medium;
+  color: $text-dark;
+  margin-top: $spacing-xl;
+  cursor: pointer;
+
+  &:active {
+    opacity: 0.9;
+  }
+
+  &.loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+}
+
+// Step 2: 选择订单
+.step-orders {
+  padding: $spacing-lg;
+}
+
+.back-link {
+  font-size: $font-size-base;
+  color: $accent;
+  margin-bottom: $spacing-lg;
+  cursor: pointer;
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.order-card {
+  padding: $spacing-lg;
+  background: $bg-card-light;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: border-color $transition-fast;
+
+  &:active {
+    border-color: $accent;
+  }
+}
+
+.order-room {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-medium;
+  color: $text-primary;
+  margin-bottom: $spacing-xs;
+}
+
+.order-date {
+  font-size: $font-size-md;
+  color: $text-secondary;
+}

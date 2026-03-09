@@ -1,0 +1,112 @@
+// ============================================
+// 民宿小程序 - 设计系统变量
+// 风格：深色奢华 Dark Luxury
+// ============================================
+
+// ----------------------
+// 颜色系统 Colors
+// ----------------------
+
+// 背景色
+$bg-dark: #0a0a0a;           // 主背景（纯黑）
+$bg-card: #1a1816;           // 卡片背景（深棕黑）
+$bg-card-light: #2a2724;     // 浅色卡片背景
+$bg-overlay: rgba(10, 10, 10, 0.95); // 遮罩/底部栏
+
+// 边框色
+$border-color: #2a2520;      // 深色边框
+$border-light: #4a443b;      // 浅色边框
+$border-subtle: rgba(255, 255, 255, 0.1);  // 微弱边框
+$border-medium: rgba(255, 255, 255, 0.15); // 中等边框
+$border-strong: rgba(255, 255, 255, 0.2);  // 强边框
+$border-line: rgba(255, 255, 255, 0.25);   // 分隔线
+
+// 主题色（金色）
+$accent: #a08c6a;            // 主金色
+$accent-light: #c9b896;      // 浅金色
+$accent-hover: rgba(160, 140, 106, 0.6); // 金色悬停
+
+// 文字色
+$text-primary: #ffffff;                    // 主文字
+$text-secondary: rgba(255, 255, 255, 0.7); // 次要文字
+$text-muted: rgba(255, 255, 255, 0.5);     // 弱化文字
+$text-dark: $bg-dark;                      // 深色文字（用于金色按钮）
+
+// ----------------------
+// 字体系统 Typography
+// ----------------------
+
+// 字号
+$font-size-xs: 8px;    // 极小（副标题英文）
+$font-size-sm: 10px;   // 小号（标签、角标）
+$font-size-base: 12px; // 基础（副标题）
+$font-size-md: 13px;   // 中等（日期、描述）
+$font-size-lg: 14px;   // 大号（卡片标题、按钮）
+$font-size-xl: 18px;   // 超大（房间名）
+$font-size-2xl: 24px;  // 标题
+$font-size-3xl: 36px;  // 大标题（Hero）
+
+// 字重
+$font-weight-light: 200;   // 极细（大标题）
+$font-weight-normal: 300;  // 细（正文）
+$font-weight-medium: 500;  // 中等（按钮、强调）
+
+// 字间距
+$letter-spacing-sm: 1px;   // 小间距
+$letter-spacing-md: 2px;   // 中间距（标签）
+$letter-spacing-lg: 3px;   // 大间距（Welcome）
+
+// ----------------------
+// 间距系统 Spacing
+// ----------------------
+
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 20px;
+$spacing-2xl: 24px;
+$spacing-3xl: 32px;
+
+// ----------------------
+// 圆角系统 Border Radius
+// ----------------------
+
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 16px;
+$radius-full: 9999px;  // 药丸形状
+
+// ----------------------
+// 阴影系统 Shadows
+// ----------------------
+
+$shadow-card: none;  // 深色主题不使用阴影，用边框代替
+
+// ----------------------
+// 动画系统 Animations
+// ----------------------
+
+$transition-fast: 0.2s;
+$transition-normal: 0.3s;
+
+// ----------------------
+// 布局系统 Layout
+// ----------------------
+
+$page-padding: 16px;
+$tab-bar-height: 80px;
+$hero-height: 200px;
+
+// 安全区域
+$safe-area-bottom: env(safe-area-inset-bottom);
+
+// ----------------------
+// 组件尺寸 Component Sizes
+// ----------------------
+
+$button-height: 44px;
+$input-height: 48px;
+$icon-size-sm: 20px;
+$icon-size-md: 22px;
+$icon-size-lg: 24px;

@@ -1,0 +1,31 @@
+@use '../../../../styles/variables' as *;
+
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  padding-top: calc(12px + env(safe-area-inset-top));
+  background: $bg-dark;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  .nav-back {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .nav-title {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .nav-placeholder {
+    width: 40px;
+  }
+}

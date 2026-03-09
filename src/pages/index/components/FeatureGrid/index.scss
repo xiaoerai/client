@@ -1,0 +1,61 @@
+@use '../../../../styles/variables' as *;
+
+.section-header {
+  display: flex;
+  align-items: center;
+  margin: 32px 0 16px;
+
+  .section-title {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: $text-muted;
+    text-transform: uppercase;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.25);
+    margin-left: 16px;
+  }
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+
+  .feature-card {
+    background: $bg-card-light;
+    border: 1px solid $border-light;
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.2s;
+    cursor: pointer;
+
+    &:active {
+      background: #353230;
+      border-color: rgba($accent, 0.6);
+    }
+
+    .feature-icon {
+      margin-bottom: 12px;
+    }
+
+    .feature-title {
+      display: block;
+      font-size: 14px;
+      font-weight: 300;
+      color: $text-primary;
+      margin-bottom: 2px;
+    }
+
+    .feature-subtitle {
+      display: block;
+      font-size: 8px;
+      letter-spacing: 1px;
+      color: $text-muted;
+      text-transform: uppercase;
+    }
+  }
+}
