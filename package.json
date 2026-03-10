@@ -1,6 +1,9 @@
 {
   "name": "client",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=22"
+  },
   "private": true,
   "description": "民宿自助入住小程序",
   "templateInfo": {
