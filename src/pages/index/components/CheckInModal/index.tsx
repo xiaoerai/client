@@ -63,35 +63,18 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
   }, [visible])
 
   // 查询订单
-  const fetchOrders = async (_phoneNum: string) => {
+  const fetchOrders = async (phoneNum: string) => {
     setLoading(true)
     try {
-      // TODO: 调用后端 API 获取订单
-      // const result = await api.getOrders(_phoneNum)
+      const orderList = await getOrders(phoneNum)
 
-      // 模拟订单数据
-      const mockOrders: Order[] = [
-        {
-          orderId: 'ORD20260309001',
-          roomNumber: '悦享大床房 301',
-          checkInDate: '2026-03-09',
-          checkOutDate: '2026-03-11',
-        },
-        {
-          orderId: 'ORD20260309002',
-          roomNumber: '豪华双床房 502',
-          checkInDate: '2026-03-09',
-          checkOutDate: '2026-03-10',
-        },
-      ]
-
-      if (mockOrders.length === 0) {
+      if (orderList.length === 0) {
         Taro.showToast({ title: '该手机号今日无待办理订单', icon: 'none' })
         setStep('phone')
         return
       }
 
-      setOrders(mockOrders)
+      setOrders(orderList)
       setStep('orders')
     } catch {
       Taro.showToast({ title: '查询失败，请重试', icon: 'none' })
@@ -135,16 +118,17 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
 
     setLoading(true)
     try {
-      const result = await login(phone, code)
-      if (result) {
+      const token = await login(phone, code)
+      if (token) {
         // 验证通过，更新全局状态（自动持久化到 storage）
         setUserPhone(phone)
-        // 直接使用登录返回的订单列表
-        if (result.orders.length === 0) {
+        // 登录成功后获取订单列表
+        const orderList = await getOrders(phone)
+        if (orderList.length === 0) {
           Taro.showToast({ title: '该手机号今日无待办理订单', icon: 'none' })
           setStep('phone')
         } else {
-          setOrders(result.orders)
+          setOrders(orderList)
           setStep('orders')
         }
       } else {

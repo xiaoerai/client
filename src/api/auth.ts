@@ -17,7 +17,6 @@ interface SendCodeResponse {
 // 登录响应
 interface LoginResponse {
   token: string
-  orders: Order[]
 }
 
 /**
@@ -32,21 +31,23 @@ export async function sendSmsCode(phone: string): Promise<boolean> {
  * 登录（验证码 + 微信 code）
  * @param phone 手机号
  * @param smsCode 短信验证码
- * @returns token 和订单列表
+ * @returns token，登录成功后需要单独调用 getOrders 获取订单
  */
 export async function login(
   phone: string,
   smsCode: string
-): Promise<{ token: string; orders: Order[] } | null> {
+): Promise<string | null> {
   // 获取微信 login code
   let wxCode = ''
-  try {
-    const loginRes = await Taro.login()
-    wxCode = loginRes.code
-  } catch (error) {
-    console.error('[Auth] wx.login 失败:', error)
-    // H5 环境下没有 wx.login，继续执行
-    if (process.env.TARO_ENV !== 'h5') {
+  if (process.env.TARO_ENV === 'h5') {
+    // H5 开发模式：使用 mock code
+    wxCode = `h5_mock_${Date.now()}`
+  } else {
+    try {
+      const loginRes = await Taro.login()
+      wxCode = loginRes.code
+    } catch (error) {
+      console.error('[Auth] wx.login 失败:', error)
       return null
     }
   }
@@ -60,10 +61,7 @@ export async function login(
   if (res.success && res.data) {
     // 存储 token
     Taro.setStorageSync('token', res.data.token)
-    return {
-      token: res.data.token,
-      orders: res.data.orders,
-    }
+    return res.data.token
   }
 
   return null
