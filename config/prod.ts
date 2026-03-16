@@ -1,5 +1,11 @@
 import type { UserConfigExport } from "@tarojs/cli";
 export default {
+  defineConstants: {
+    // 生产环境不需要 API 地址（用云托管内网调用）
+    API_BASE_URL: '""',
+    // 微信云环境 ID（需要替换为实际值）
+    CLOUD_ENV_ID: '"prod-xxx"',
+  },
   mini: {},
   h5: {
     /**

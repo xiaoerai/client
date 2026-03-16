@@ -1,5 +1,9 @@
 /// <reference types="@tarojs/taro" />
 
+// 环境变量（由 defineConstants 注入）
+declare const API_BASE_URL: string
+declare const CLOUD_ENV_ID: string
+
 declare module '*.png';
 declare module '*.gif';
 declare module '*.jpg';
