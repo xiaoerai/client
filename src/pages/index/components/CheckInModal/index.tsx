@@ -3,6 +3,7 @@ import Taro from '@tarojs/taro'
 import Input from '../../../../components/Input'
 import { SelectedOrder } from '../../../../hooks/useOrderAuth'
 import { useAppStore } from '../../../../stores/useAppStore'
+import { sendSmsCode, login, getOrders } from '../../../../api'
 import './index.scss'
 
 interface Order {
@@ -100,13 +101,6 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
     }
   }
 
-  // ============ 测试用假数据 ============
-  // 测试手机号: 13800138000
-  // 测试验证码: 1234
-  const MOCK_PHONE = '13800138000'
-  const MOCK_CODE = '1234'
-  // =====================================
-
   // 发送验证码
   const handleSendCode = useCallback(async () => {
     if (phone.length !== 11) {
@@ -116,10 +110,13 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
     if (countdown > 0) return
 
     try {
-      // TODO: 调用后端 API 发送验证码
-      // await api.sendSmsCode(phone)
-      setCountdown(60)
-      Taro.showToast({ title: `验证码已发送（测试: ${MOCK_CODE}）`, icon: 'none', duration: 3000 })
+      const success = await sendSmsCode(phone)
+      if (success) {
+        setCountdown(60)
+        Taro.showToast({ title: '验证码已发送', icon: 'none' })
+      } else {
+        Taro.showToast({ title: '发送失败，请重试', icon: 'none' })
+      }
     } catch {
       Taro.showToast({ title: '发送失败，请重试', icon: 'none' })
     }
@@ -138,18 +135,24 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
 
     setLoading(true)
     try {
-      // 模拟验证：手机号 13800138000，验证码 1234
-      if (phone === MOCK_PHONE && code === MOCK_CODE) {
+      const result = await login(phone, code)
+      if (result) {
         // 验证通过，更新全局状态（自动持久化到 storage）
         setUserPhone(phone)
-        // 查询订单
-        await fetchOrders(phone)
+        // 直接使用登录返回的订单列表
+        if (result.orders.length === 0) {
+          Taro.showToast({ title: '该手机号今日无待办理订单', icon: 'none' })
+          setStep('phone')
+        } else {
+          setOrders(result.orders)
+          setStep('orders')
+        }
       } else {
-        Taro.showToast({ title: '验证码错误（测试: 1234）', icon: 'none' })
-        setLoading(false)
+        Taro.showToast({ title: '验证码错误', icon: 'none' })
       }
     } catch {
       Taro.showToast({ title: '验证失败，请重试', icon: 'none' })
+    } finally {
       setLoading(false)
     }
   }, [phone, code])

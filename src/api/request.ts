@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro'
 
-// 环境变量（由 config/dev.ts 和 config/prod.ts 注入）
+// 环境变量（由 config/dev.ts 或 config/prod.ts 的 defineConstants 注入）
 declare const API_BASE_URL: string
 declare const CLOUD_ENV_ID: string
 

@@ -1,8 +1,14 @@
 /// <reference types="@tarojs/taro" />
 
-// 环境变量（由 defineConstants 注入）
-declare const API_BASE_URL: string
-declare const CLOUD_ENV_ID: string
+// Vite 环境变量类型
+interface ImportMetaEnv {
+  readonly TARO_APP_API_BASE_URL: string
+  readonly TARO_APP_CLOUD_ENV_ID: string
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
 
 declare module '*.png';
 declare module '*.gif';
@@ -14,6 +20,10 @@ declare module '*.less';
 declare module '*.scss';
 declare module '*.sass';
 declare module '*.styl';
+
+declare const process: {
+  env: NodeJS.ProcessEnv
+}
 
 declare namespace NodeJS {
   interface ProcessEnv {
