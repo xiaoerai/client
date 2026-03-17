@@ -23,6 +23,14 @@ export interface HotelConfig {
   checkOutTime: string
 }
 
+// 订单信息
+export interface Order {
+  orderId: string
+  roomName: string
+  checkInDate: string
+  checkOutDate: string
+}
+
 interface AppState {
   // 当前入住信息
   currentStay: StayInfo | null
@@ -35,6 +43,10 @@ interface AppState {
   // 用户信息
   userPhone: string | null
   setUserPhone: (phone: string | null) => void
+
+  // 订单列表（不持久化，每次会话重新拉取）
+  orders: Order[]
+  setOrders: (orders: Order[]) => void
 
   // 语言
   language: Language
@@ -75,6 +87,10 @@ export const useAppStore = create<AppState>()(
       // 用户信息
       userPhone: null,
       setUserPhone: (phone) => set({ userPhone: phone }),
+
+      // 订单列表
+      orders: [],
+      setOrders: (orders) => set({ orders }),
 
       // 语言
       language: 'zh',

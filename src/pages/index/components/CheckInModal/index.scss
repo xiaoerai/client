@@ -1,4 +1,5 @@
 @use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
 
 .modal-overlay {
   position: fixed;
@@ -34,9 +35,22 @@
 }
 
 .modal-title {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
   font-size: $font-size-lg;
   font-weight: $font-weight-normal;
-  color: $text-primary;
+  color: $accent;
+}
+
+.refresh-btn {
+  font-size: 14px;
+  color: $text-muted;
+  cursor: pointer;
+
+  &:active {
+    color: $text-primary;
+  }
 }
 
 .modal-close {
@@ -75,6 +89,7 @@
   }
 
   .btn-primary {
+    @include btn-primary;
     margin-top: $spacing-sm;
   }
 }
@@ -109,15 +124,9 @@
   padding: $spacing-lg;
 }
 
-.back-link {
-  font-size: $font-size-base;
-  color: $accent;
-  margin-bottom: $spacing-lg;
-  cursor: pointer;
-
-  &:active {
-    opacity: 0.8;
-  }
+.change-phone {
+  @include btn-primary;
+  margin-top: $spacing-lg;
 }
 
 .orders-list {
@@ -127,10 +136,8 @@
 }
 
 .order-card {
+  @include card-light;
   padding: $spacing-lg;
-  background: $bg-card-light;
-  border: 1px solid $border-color;
-  border-radius: $radius-md;
   cursor: pointer;
   transition: border-color $transition-fast;
 
@@ -147,8 +154,5 @@
 }
 
 .order-date {
-  font-size: $font-size-xs;
-  letter-spacing: $letter-spacing-sm;
-  color: $text-muted;
-  text-transform: uppercase;
+  @include subtitle-label;
 }

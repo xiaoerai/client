@@ -2,16 +2,9 @@ import { useState, useEffect, useCallback } from 'react'
 import Taro from '@tarojs/taro'
 import Input from '../../../../components/Input'
 import { SelectedOrder } from '../../../../hooks/useOrderAuth'
-import { useAppStore } from '../../../../stores/useAppStore'
+import { useAppStore, Order } from '../../../../stores/useAppStore'
 import { sendSmsCode, login, getOrders } from '../../../../api'
 import './index.scss'
-
-interface Order {
-  orderId: string
-  roomName: string
-  checkInDate: string
-  checkOutDate: string
-}
 
 interface CheckInModalProps {
   visible: boolean
@@ -22,15 +15,16 @@ interface CheckInModalProps {
 type Step = 'loading' | 'phone' | 'orders'
 
 function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
-  // 全局状态：已验证的手机号
+  // 全局状态
   const setUserPhone = useAppStore((state) => state.setUserPhone)
+  const orders = useAppStore((state) => state.orders)
+  const setOrders = useAppStore((state) => state.setOrders)
 
   const [step, setStep] = useState<Step>('loading')
   const [phone, setPhone] = useState('')
   const [code, setCode] = useState('')
   const [countdown, setCountdown] = useState(0)
   const [loading, setLoading] = useState(false)
-  const [orders, setOrders] = useState<Order[]>([])
 
   // 倒计时逻辑
   useEffect(() => {
@@ -43,22 +37,26 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
   // 打开弹窗时检查是否已有验证过的手机号
   useEffect(() => {
     if (visible) {
-      // 从 store 获取最新值（不放入依赖，避免验证成功后重复 fetch）
-      const currentPhone = useAppStore.getState().userPhone
+      // 从 store 获取最新值
+      const { userPhone: currentPhone, orders: cachedOrders } = useAppStore.getState()
       if (currentPhone) {
-        // 已有手机号，直接查询订单
         setPhone(currentPhone)
-        fetchOrders(currentPhone)
+        // 如果已有缓存的订单，直接显示
+        if (cachedOrders.length > 0) {
+          setStep('orders')
+        } else {
+          // 没有缓存，查询订单
+          fetchOrders(currentPhone)
+        }
       } else {
         // 没有手机号，显示输入表单
         setStep('phone')
       }
     } else {
-      // 关闭时重置 UI 状态（不动 store）
+      // 关闭时只重置 UI 状态，不清空订单缓存
       setStep('loading')
       setPhone('')
       setCode('')
-      setOrders([])
     }
   }, [visible])
 
@@ -143,12 +141,12 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
     onSelectOrder(order)
   }
 
-  // 更换手机号（只切换UI，不修改 store，验证成功后才更新）
+  // 更换手机号（清空订单缓存，切换到手机验证）
   const handleChangePhone = () => {
     setPhone('')
     setCode('')
     setStep('phone')
-    setOrders([])
+    setOrders([]) // 清空全局订单缓存
   }
 
   // 格式化日期显示
@@ -163,9 +161,12 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <span className="modal-title">
+          <div className="modal-title">
             {step === 'loading' ? '加载中' : step === 'phone' ? '验证手机号' : '选择订单'}
-          </span>
+            {step === 'orders' && (
+              <span className="refresh-btn" onClick={() => fetchOrders(phone)}>↻</span>
+            )}
+          </div>
           <div className="modal-close" onClick={onClose}>×</div>
         </div>
 
@@ -210,10 +211,6 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
           </div>
         ) : (
           <div className="step-orders">
-            <div className="back-link" onClick={handleChangePhone}>
-              ← 更换手机号
-            </div>
-
             {orders.length === 0 ? (
               <div className="step-loading">
                 <span>今日暂无待办理订单</span>
@@ -234,6 +231,10 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
                 ))}
               </div>
             )}
+
+            <div className="change-phone" onClick={handleChangePhone}>
+              更换手机号
+            </div>
           </div>
         )}
       </div>
