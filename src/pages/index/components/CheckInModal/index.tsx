@@ -67,18 +67,12 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
     setLoading(true)
     try {
       const orderList = await getOrders(phoneNum)
-
-      if (orderList.length === 0) {
-        Taro.showToast({ title: '该手机号今日无待办理订单', icon: 'none' })
-        setStep('phone')
-        return
-      }
-
       setOrders(orderList)
       setStep('orders')
     } catch {
       Taro.showToast({ title: '查询失败，请重试', icon: 'none' })
-      setStep('phone')
+      setStep('orders')
+      setOrders([])
     } finally {
       setLoading(false)
     }
@@ -124,13 +118,8 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
         setUserPhone(phone)
         // 登录成功后获取订单列表
         const orderList = await getOrders(phone)
-        if (orderList.length === 0) {
-          Taro.showToast({ title: '该手机号今日无待办理订单', icon: 'none' })
-          setStep('phone')
-        } else {
-          setOrders(orderList)
-          setStep('orders')
-        }
+        setOrders(orderList)
+        setStep('orders')
       } else {
         Taro.showToast({ title: '验证码错误', icon: 'none' })
       }
@@ -225,20 +214,26 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
               ← 更换手机号
             </div>
 
-            <div className="orders-list">
-              {orders.map((order) => (
-                <div
-                  key={order.orderId}
-                  className="order-card"
-                  onClick={() => handleSelectOrder(order)}
-                >
-                  <div className="order-room">{order.roomName}</div>
-                  <div className="order-date">
-                    {formatDate(order.checkInDate)} - {formatDate(order.checkOutDate)}
+            {orders.length === 0 ? (
+              <div className="step-loading">
+                <span>今日暂无待办理订单</span>
+              </div>
+            ) : (
+              <div className="orders-list">
+                {orders.map((order) => (
+                  <div
+                    key={order.orderId}
+                    className="order-card"
+                    onClick={() => handleSelectOrder(order)}
+                  >
+                    <div className="order-room">{order.roomName}</div>
+                    <div className="order-date">
+                      {formatDate(order.checkInDate)} - {formatDate(order.checkOutDate)}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
