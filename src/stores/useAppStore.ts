@@ -45,8 +45,9 @@ interface AppState {
   setUserPhone: (phone: string | null) => void
 
   // 订单列表（不持久化，每次会话重新拉取）
-  orders: Order[]
-  setOrders: (orders: Order[]) => void
+  // null = 未拉取, [] = 拉取了但没订单
+  orders: Order[] | null
+  setOrders: (orders: Order[] | null) => void
 
   // 语言
   language: Language
@@ -89,7 +90,7 @@ export const useAppStore = create<AppState>()(
       setUserPhone: (phone) => set({ userPhone: phone }),
 
       // 订单列表
-      orders: [],
+      orders: null,
       setOrders: (orders) => set({ orders }),
 
       // 语言

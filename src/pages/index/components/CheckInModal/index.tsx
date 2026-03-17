@@ -41,11 +41,11 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
       const { userPhone: currentPhone, orders: cachedOrders } = useAppStore.getState()
       if (currentPhone) {
         setPhone(currentPhone)
-        // 如果已有缓存的订单，直接显示
-        if (cachedOrders.length > 0) {
+        // 如果已拉取过订单（包括空数组），直接显示
+        if (cachedOrders !== null) {
           setStep('orders')
         } else {
-          // 没有缓存，查询订单
+          // 未拉取过，查询订单
           fetchOrders(currentPhone)
         }
       } else {
@@ -146,7 +146,7 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
     setPhone('')
     setCode('')
     setStep('phone')
-    setOrders([]) // 清空全局订单缓存
+    setOrders(null) // 清空全局订单缓存
   }
 
   // 格式化日期显示
@@ -211,7 +211,7 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
           </div>
         ) : (
           <div className="step-orders">
-            {orders.length === 0 ? (
+            {!orders || orders.length === 0 ? (
               <div className="step-loading">
                 <span>今日暂无待办理订单</span>
               </div>
