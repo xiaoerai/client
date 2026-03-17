@@ -40,8 +40,8 @@ export async function login(
   // 获取微信 login code
   let wxCode = ''
   if (process.env.TARO_ENV === 'h5') {
-    // H5 开发模式：使用 mock code
-    wxCode = `h5_mock_${Date.now()}`
+    // H5 开发模式：使用手机号生成固定的 mock code，避免重复创建用户
+    wxCode = `h5_mock_${phone}`
   } else {
     try {
       const loginRes = await Taro.login()
