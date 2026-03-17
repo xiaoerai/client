@@ -8,7 +8,7 @@ import './index.scss'
 
 interface Order {
   orderId: string
-  roomNumber: string
+  roomName: string
   checkInDate: string
   checkOutDate: string
 }
@@ -146,7 +146,7 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
     // 存储选中的订单
     const selectedOrder: SelectedOrder = {
       orderId: order.orderId,
-      roomNumber: order.roomNumber,
+      roomName: order.roomName,
       checkInDate: order.checkInDate,
       checkOutDate: order.checkOutDate,
     }
@@ -232,7 +232,7 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
                   className="order-card"
                   onClick={() => handleSelectOrder(order)}
                 >
-                  <div className="order-room">{order.roomNumber}</div>
+                  <div className="order-room">{order.roomName}</div>
                   <div className="order-date">
                     {formatDate(order.checkInDate)} - {formatDate(order.checkOutDate)}
                   </div>

@@ -3,7 +3,7 @@ import Taro from '@tarojs/taro'
 
 export interface SelectedOrder {
   orderId: string
-  roomNumber: string
+  roomName: string
   checkInDate: string
   checkOutDate: string
 }

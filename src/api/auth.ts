@@ -4,7 +4,7 @@ import { post } from './request'
 // 订单信息
 export interface Order {
   orderId: string
-  roomNumber: string
+  roomName: string
   checkInDate: string
   checkOutDate: string
 }
