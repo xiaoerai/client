@@ -50,9 +50,9 @@ function Checkin() {
     }
   }
 
-  const handleRemoveGuest = async (idx: number) => {
+  const handleRemoveGuest = (idx: number) => {
     const guest = guests[idx]
-    await removeMyGuest(phone, guest.idNumber)
+    // 先更新 UI，后端异步处理
     const updated = guests.filter((_, i) => i !== idx)
     setGuests(updated)
     if (selectedGuestIdx === idx) {
@@ -60,6 +60,7 @@ function Checkin() {
     } else if (selectedGuestIdx !== null && selectedGuestIdx > idx) {
       setSelectedGuestIdx(selectedGuestIdx - 1)
     }
+    removeMyGuest(phone, guest.idNumber).catch(() => {})
   }
 
   const handleBack = () => {

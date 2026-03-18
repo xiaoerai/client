@@ -34,6 +34,7 @@ export function useCheckinFlow(onNavigate: (target: 'checkin' | 'success') => vo
   })
 
   const orders = useOrdersStep({
+    onLoading: () => setStep('loading'),
     onResult: (result) => {
       if (result === 'no_record') {
         // 由 onNavigateCheckin 处理

@@ -6,11 +6,12 @@ import { getOrders, getCheckIn } from '../../api'
 type OrderResult = 'no_record' | 'pending_deposit' | 'paid'
 
 interface UseOrdersStepOptions {
+  onLoading: () => void
   onResult: (result: OrderResult) => void
   onNavigateCheckin: () => void
 }
 
-export function useOrdersStep({ onResult, onNavigateCheckin }: UseOrdersStepOptions) {
+export function useOrdersStep({ onLoading, onResult, onNavigateCheckin }: UseOrdersStepOptions) {
   const orders = useAppStore((state) => state.orders)
   const setOrders = useAppStore((state) => state.setOrders)
   const setSelectedOrder = useAppStore((state) => state.setSelectedOrder)
@@ -39,6 +40,7 @@ export function useOrdersStep({ onResult, onNavigateCheckin }: UseOrdersStepOpti
       checkOutDate: order.checkOutDate,
     })
 
+    onLoading()
     const record = await getCheckIn(order.orderId)
 
     if (!record) {
