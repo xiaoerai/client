@@ -300,6 +300,12 @@
 .success-message {
   font-size: $font-size-lg;
   color: $text-primary;
+  margin-bottom: $spacing-sm;
+}
+
+.success-hint {
+  font-size: $font-size-sm;
+  color: $text-muted;
   margin-bottom: $spacing-2xl;
 }
 

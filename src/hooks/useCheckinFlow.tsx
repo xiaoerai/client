@@ -388,6 +388,7 @@ export function useCheckinFlow(onNavigate: (target: 'checkin' | 'success') => vo
       <div className="step-success">
         <div className="success-icon">✓</div>
         <div className="success-message">{t('success.message', '祝您入住愉快')}</div>
+        <div className="success-hint">{t('success.hint', 'WiFi密码与房间密码请在主页查看')}</div>
         <div className="btn-primary" onClick={close}>
           {t('success.confirm', '我知道了')}
         </div>
