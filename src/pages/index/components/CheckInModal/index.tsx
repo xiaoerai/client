@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import Taro from '@tarojs/taro'
+import Modal from '../../../../components/Modal'
 import Input from '../../../../components/Input'
 import { SelectedOrder } from '../../../../hooks/useOrderAuth'
 import { useAppStore, Order } from '../../../../stores/useAppStore'
@@ -155,90 +156,82 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
     return `${date.getMonth() + 1}月${date.getDate()}日`
   }
 
-  if (!visible) return null
+  const title = step === 'loading' ? '加载中' : step === 'phone' ? '验证手机号' : '选择订单'
+
+  const headerRight = step === 'orders' ? (
+    <span className="refresh-btn" onClick={() => fetchOrders(phone)}>↻</span>
+  ) : undefined
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <div className="modal-title">
-            {step === 'loading' ? '加载中' : step === 'phone' ? '验证手机号' : '选择订单'}
-            {step === 'orders' && (
-              <span className="refresh-btn" onClick={() => fetchOrders(phone)}>↻</span>
-            )}
-          </div>
-          <div className="modal-close" onClick={onClose}>×</div>
+    <Modal visible={visible} title={title} onClose={onClose} headerRight={headerRight}>
+      {step === 'loading' ? (
+        <div className="step-loading">
+          <span>正在查询订单...</span>
         </div>
+      ) : step === 'phone' ? (
+        <div className="step-phone">
+          <Input
+            label="手机号"
+            type="number"
+            placeholder="请输入预订时填写的手机号"
+            maxLength={11}
+            value={phone}
+            onChange={setPhone}
+          />
 
-        {step === 'loading' ? (
-          <div className="step-loading">
-            <span>正在查询订单...</span>
+          <Input
+            label="验证码"
+            type="number"
+            placeholder="请输入验证码"
+            maxLength={6}
+            value={code}
+            onChange={setCode}
+            suffix={
+              <div
+                className={`code-btn ${countdown > 0 ? 'disabled' : ''}`}
+                onClick={handleSendCode}
+              >
+                {countdown > 0 ? `${countdown}s` : '获取验证码'}
+              </div>
+            }
+          />
+
+          <div
+            className={`btn-primary ${loading ? 'loading' : ''}`}
+            onClick={handleVerify}
+          >
+            {loading ? '验证中...' : '下一步'}
           </div>
-        ) : step === 'phone' ? (
-          <div className="step-phone">
-            <Input
-              label="手机号"
-              type="number"
-              placeholder="请输入预订时填写的手机号"
-              maxLength={11}
-              value={phone}
-              onChange={setPhone}
-            />
-
-            <Input
-              label="验证码"
-              type="number"
-              placeholder="请输入验证码"
-              maxLength={6}
-              value={code}
-              onChange={setCode}
-              suffix={
+        </div>
+      ) : (
+        <div className="step-orders">
+          {!orders || orders.length === 0 ? (
+            <div className="step-loading">
+              <span>今日暂无待办理订单</span>
+            </div>
+          ) : (
+            <div className="orders-list">
+              {orders.map((order) => (
                 <div
-                  className={`code-btn ${countdown > 0 ? 'disabled' : ''}`}
-                  onClick={handleSendCode}
+                  key={order.orderId}
+                  className="order-card"
+                  onClick={() => handleSelectOrder(order)}
                 >
-                  {countdown > 0 ? `${countdown}s` : '获取验证码'}
-                </div>
-              }
-            />
-
-            <div
-              className={`btn-primary ${loading ? 'loading' : ''}`}
-              onClick={handleVerify}
-            >
-              {loading ? '验证中...' : '下一步'}
-            </div>
-          </div>
-        ) : (
-          <div className="step-orders">
-            {!orders || orders.length === 0 ? (
-              <div className="step-loading">
-                <span>今日暂无待办理订单</span>
-              </div>
-            ) : (
-              <div className="orders-list">
-                {orders.map((order) => (
-                  <div
-                    key={order.orderId}
-                    className="order-card"
-                    onClick={() => handleSelectOrder(order)}
-                  >
-                    <div className="order-room">{order.roomName}</div>
-                    <div className="order-date">
-                      {formatDate(order.checkInDate)} - {formatDate(order.checkOutDate)}
-                    </div>
+                  <div className="order-room">{order.roomName}</div>
+                  <div className="order-date">
+                    {formatDate(order.checkInDate)} - {formatDate(order.checkOutDate)}
                   </div>
-                ))}
-              </div>
-            )}
-
-            <div className="change-phone" onClick={handleChangePhone}>
-              更换手机号
+                </div>
+              ))}
             </div>
+          )}
+
+          <div className="change-phone" onClick={handleChangePhone}>
+            更换手机号
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </Modal>
   )
 }
 

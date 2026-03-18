@@ -1,0 +1,88 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.deposit-info {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding-bottom: $spacing-lg;
+  border-bottom: 1px solid $border-subtle;
+}
+
+.deposit-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.deposit-label {
+  font-size: $font-size-base;
+  color: $text-muted;
+}
+
+.deposit-value {
+  font-size: $font-size-base;
+  color: $text-primary;
+}
+
+.deposit-amount-section {
+  padding: $spacing-xl 0;
+  text-align: center;
+}
+
+.deposit-amount-label {
+  font-size: $font-size-sm;
+  color: $text-muted;
+  letter-spacing: $letter-spacing-sm;
+  margin-bottom: $spacing-sm;
+}
+
+.deposit-amount {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.deposit-currency {
+  font-size: $font-size-xl;
+  color: $accent;
+  font-weight: $font-weight-light;
+  margin-right: 2px;
+}
+
+.deposit-number {
+  font-size: $font-size-3xl;
+  color: $accent;
+  font-weight: $font-weight-light;
+}
+
+.deposit-pay-btn {
+  @include btn-primary;
+}
+
+.deposit-more-toggle {
+  text-align: center;
+  font-size: $font-size-base;
+  color: $text-secondary;
+  margin-top: $spacing-md;
+  cursor: pointer;
+
+  &:active {
+    color: $accent;
+  }
+}
+
+.deposit-more-methods {
+  margin-top: $spacing-md;
+}
+
+.deposit-wechat-btn {
+  @include btn-secondary;
+}
+
+.deposit-tip {
+  text-align: center;
+  font-size: $font-size-sm;
+  color: $text-muted;
+  margin-top: $spacing-md;
+}
