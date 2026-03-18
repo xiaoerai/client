@@ -60,24 +60,9 @@
   @include btn-primary;
 }
 
-.deposit-more-toggle {
-  text-align: center;
-  font-size: $font-size-base;
-  color: $text-secondary;
-  margin-top: $spacing-md;
-  cursor: pointer;
-
-  &:active {
-    color: $accent;
-  }
-}
-
-.deposit-more-methods {
-  margin-top: $spacing-md;
-}
-
 .deposit-wechat-btn {
   @include btn-secondary;
+  margin-top: $spacing-md;
 }
 
 .deposit-tip {

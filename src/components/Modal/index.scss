@@ -6,12 +6,39 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: $spacing-lg;
+  transition: background 0.25s ease;
+
+  .modal-content {
+    transform: scale(0.9);
+    opacity: 0;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+
+  // 进入动画
+  &.modal-enter {
+    background: rgba(0, 0, 0, 0.8);
+
+    .modal-content {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  // 退出动画
+  &.modal-exit {
+    background: rgba(0, 0, 0, 0);
+
+    .modal-content {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+  }
 }
 
 .modal-content {

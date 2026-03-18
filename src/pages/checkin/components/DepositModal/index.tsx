@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Modal from '../../../../components/Modal'
 import './index.scss'
@@ -27,7 +26,6 @@ function DepositModal({
   onClose,
 }: DepositModalProps) {
   const { t } = useTranslation()
-  const [showMore, setShowMore] = useState(false)
 
   return (
     <Modal visible={visible} title={t('deposit.title', '押金支付')} onClose={onClose}>
@@ -61,20 +59,12 @@ function DepositModal({
         {paying ? t('deposit.paying', '支付中...') : t('deposit.pay', '支付宝支付')}
       </div>
 
-      {!showMore ? (
-        <div className="deposit-more-toggle" onClick={() => setShowMore(true)}>
-          {t('deposit.morePay', '更多支付方式')} ▾
-        </div>
-      ) : (
-        <div className="deposit-more-methods">
-          <div
-            className={`btn-secondary deposit-wechat-btn ${paying ? 'loading' : ''}`}
-            onClick={paying ? undefined : onWechatPay}
-          >
-            {t('deposit.wechatPay', '微信支付')}
-          </div>
-        </div>
-      )}
+      <div
+        className={`btn-secondary deposit-wechat-btn ${paying ? 'loading' : ''}`}
+        onClick={paying ? undefined : onWechatPay}
+      >
+        {t('deposit.wechatPay', '微信支付')}
+      </div>
 
       <div className="deposit-tip">
         {t('deposit.tip', '押金将在退房后原路退回')}

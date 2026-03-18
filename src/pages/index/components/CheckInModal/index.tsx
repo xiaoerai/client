@@ -10,7 +10,7 @@ import './index.scss'
 interface CheckInModalProps {
   visible: boolean
   onClose: () => void
-  onSelectOrder: (order: Order) => void
+  onSelectOrder: (order: Order) => Promise<void>
 }
 
 type Step = 'loading' | 'phone' | 'orders'
@@ -130,7 +130,7 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
   }, [phone, code])
 
   // 选择订单
-  const handleSelectOrder = (order: Order) => {
+  const handleSelectOrder = async (order: Order) => {
     // 存储选中的订单
     const selectedOrder: SelectedOrder = {
       orderId: order.orderId,
@@ -139,7 +139,10 @@ function CheckInModal({ visible, onClose, onSelectOrder }: CheckInModalProps) {
       checkOutDate: order.checkOutDate,
     }
     Taro.setStorageSync('selectedOrder', selectedOrder)
-    onSelectOrder(order)
+
+    // 切到 loading 状态，等首页查完入住状态再关弹窗
+    setStep('loading')
+    await onSelectOrder(order)
   }
 
   // 更换手机号（清空订单缓存，切换到手机验证）

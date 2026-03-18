@@ -53,16 +53,15 @@ function Index() {
   }
 
   const handleSelectOrder = async (order: any) => {
-    setShowCheckInModal(false)
-
-    // 查询该订单的入住状态，决定跳哪个页面
+    // CheckInModal 已切到 loading 状态，查询入住状态
     const record = await getCheckIn(order.orderId)
 
+    // 查完后关闭 CheckInModal
+    setShowCheckInModal(false)
+
     if (!record) {
-      // 没有入住记录 → 填表单
       navigateTo('checkin')
     } else if (!record.depositPaid) {
-      // 已入住未付押金 → 弹押金弹窗
       setDepositOrder({
         orderId: order.orderId,
         roomName: order.roomName,
@@ -71,7 +70,6 @@ function Index() {
       })
       setShowDeposit(true)
     } else {
-      // 已付押金 → 成功页
       navigateTo('success')
     }
   }
