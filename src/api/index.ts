@@ -30,3 +30,7 @@ export type { GuestInput, CheckInRecord, CreateCheckInParams, UpdateCheckInParam
 // 押金 API
 export { createDeposit, confirmDeposit } from './deposit'
 export type { PayChannel, CreatePaymentResult, ConfirmPaymentResult } from './deposit'
+
+// 用户 API
+export { getMyGuests } from './user'
+export type { CachedGuest } from './user'

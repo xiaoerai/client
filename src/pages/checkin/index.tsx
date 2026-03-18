@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import Taro from '@tarojs/taro'
 import { checkinFormSchema, CheckinFormData } from '../../utils/schemas'
 import { recognizeIdCard } from '../../utils/ocr'
 import { useOrderAuth } from '../../hooks/useOrderAuth'
 import { useAppStore } from '../../stores/useAppStore'
-import { createCheckIn } from '../../api'
+import { createCheckIn, getMyGuests } from '../../api'
+import type { CachedGuest } from '../../api'
 import NavBar from './components/NavBar'
 import FormSection from './components/FormSection'
 import UploadSection from './components/UploadSection'
@@ -24,6 +25,30 @@ function Checkin() {
   })
   const [idFront, setIdFront] = useState('')
   const [isRecognizing, setIsRecognizing] = useState(false)
+  const [guests, setGuests] = useState<CachedGuest[]>([])
+  const [selectedGuestIdx, setSelectedGuestIdx] = useState<number | null>(null)
+
+  // 加载历史住客
+  useEffect(() => {
+    if (!phone) return
+    getMyGuests(phone).then((list) => {
+      if (list.length > 0) {
+        setGuests(list)
+        // 默认填充最近一个
+        setSelectedGuestIdx(0)
+        setForm({ name: list[0].name, idNumber: list[0].idNumber })
+      }
+    }).catch(() => {})
+  }, [phone])
+
+  const handleSelectGuest = (idx: number | null) => {
+    setSelectedGuestIdx(idx)
+    if (idx !== null && guests[idx]) {
+      setForm({ name: guests[idx].name, idNumber: guests[idx].idNumber })
+    } else {
+      setForm({ name: '', idNumber: '' })
+    }
+  }
 
   const handleBack = () => {
     Taro.navigateBack()
@@ -119,6 +144,26 @@ function Checkin() {
   return (
     <div className="checkin-page">
       <NavBar title={t('guestInfo.title')} onBack={handleBack} />
+
+      {guests.length > 0 && (
+        <div className="guest-picker">
+          {guests.map((g, idx) => (
+            <div
+              key={g.idNumber}
+              className={`guest-tag ${selectedGuestIdx === idx ? 'active' : ''}`}
+              onClick={() => handleSelectGuest(idx)}
+            >
+              {g.name}
+            </div>
+          ))}
+          <div
+            className={`guest-tag ${selectedGuestIdx === null ? 'active' : ''}`}
+            onClick={() => handleSelectGuest(null)}
+          >
+            + 新住客
+          </div>
+        </div>
+      )}
 
       <UploadSection
         idFront={idFront}
