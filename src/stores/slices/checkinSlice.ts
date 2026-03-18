@@ -10,7 +10,6 @@ export interface CheckinRecord {
   checkOutDate: string
   guestIds: string[]
   depositPaid: boolean
-  depositAmount?: number
   status: 'pending' | 'checked_in' | 'checked_out'
   createdAt: string
   updatedAt: string

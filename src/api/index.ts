@@ -15,10 +15,9 @@ export type { Order } from './auth'
 export {
   getOrders,
   getOrderDetail,
-  submitCheckin,
   getRoomInfo,
 } from './orders'
-export type { OrderDetail, RoomInfo, GuestInfo } from './orders'
+export type { OrderDetail, RoomInfo } from './orders'
 
 // 入住 API
 export {
