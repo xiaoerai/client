@@ -26,6 +26,14 @@ export default defineConfig<'webpack5'>(async (merge) => {
     framework: 'react',
     compiler: 'webpack5',
     mini: {
+      // 确保第三方依赖也被转译为 ES5
+      compile: {
+        exclude: [],
+        include: [
+          // 包含所有 node_modules
+          (modulePath: string) => /node_modules/.test(modulePath)
+        ]
+      },
       postcss: {
         pxtransform: {
           enable: true,
