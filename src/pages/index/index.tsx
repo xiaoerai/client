@@ -10,7 +10,7 @@ import Modal from '../../components/Modal'
 // Store & Hooks & Config
 import { useAppStore } from '../../stores/useAppStore'
 import { useNavigate } from '../../hooks/useNavigate'
-import { useCheckinFlow } from '../../hooks/useCheckinFlow'
+import { useCheckinFlow } from '../../hooks/checkinFlow'
 import { features } from '../../config/features'
 import './index.scss'
 
