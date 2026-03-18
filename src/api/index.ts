@@ -19,3 +19,11 @@ export {
   getRoomInfo,
 } from './orders'
 export type { OrderDetail, RoomInfo, GuestInfo } from './orders'
+
+// 入住 API
+export {
+  createCheckIn,
+  getCheckIn,
+  updateCheckIn,
+} from './checkin'
+export type { GuestInput, CheckInRecord, CreateCheckInParams, UpdateCheckInParams } from './checkin'
