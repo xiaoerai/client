@@ -1,4 +1,4 @@
-import { get } from './request'
+import { get, request } from './request'
 
 export interface CachedGuest {
   name: string
@@ -14,4 +14,14 @@ export async function getMyGuests(phone: string): Promise<CachedGuest[]> {
     return res.data
   }
   return []
+}
+
+/**
+ * 解除用户与住客的关联
+ */
+export async function removeMyGuest(phone: string, idNumber: string): Promise<boolean> {
+  const res = await request(`/api/user/guests?phone=${phone}&idNumber=${idNumber}`, {
+    method: 'DELETE',
+  })
+  return res.success
 }

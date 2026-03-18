@@ -32,5 +32,5 @@ export { createDeposit, confirmDeposit } from './deposit'
 export type { PayChannel, CreatePaymentResult, ConfirmPaymentResult } from './deposit'
 
 // 用户 API
-export { getMyGuests } from './user'
+export { getMyGuests, removeMyGuest } from './user'
 export type { CachedGuest } from './user'

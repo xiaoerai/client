@@ -5,11 +5,12 @@ import { checkinFormSchema, CheckinFormData } from '../../utils/schemas'
 import { recognizeIdCard } from '../../utils/ocr'
 import { useOrderAuth } from '../../hooks/useOrderAuth'
 import { useAppStore } from '../../stores/useAppStore'
-import { createCheckIn, getMyGuests } from '../../api'
+import { createCheckIn, getMyGuests, removeMyGuest } from '../../api'
 import type { CachedGuest } from '../../api'
 import NavBar from './components/NavBar'
 import FormSection from './components/FormSection'
 import UploadSection from './components/UploadSection'
+import GuestPicker from './components/GuestPicker'
 import './index.scss'
 
 function Checkin() {
@@ -34,7 +35,6 @@ function Checkin() {
     getMyGuests(phone).then((list) => {
       if (list.length > 0) {
         setGuests(list)
-        // 默认填充最近一个
         setSelectedGuestIdx(0)
         setForm({ name: list[0].name, idNumber: list[0].idNumber })
       }
@@ -47,6 +47,18 @@ function Checkin() {
       setForm({ name: guests[idx].name, idNumber: guests[idx].idNumber })
     } else {
       setForm({ name: '', idNumber: '' })
+    }
+  }
+
+  const handleRemoveGuest = async (idx: number) => {
+    const guest = guests[idx]
+    await removeMyGuest(phone, guest.idNumber)
+    const updated = guests.filter((_, i) => i !== idx)
+    setGuests(updated)
+    if (selectedGuestIdx === idx) {
+      handleSelectGuest(updated.length > 0 ? 0 : null)
+    } else if (selectedGuestIdx !== null && selectedGuestIdx > idx) {
+      setSelectedGuestIdx(selectedGuestIdx - 1)
     }
   }
 
@@ -145,25 +157,12 @@ function Checkin() {
     <div className="checkin-page">
       <NavBar title={t('guestInfo.title')} onBack={handleBack} />
 
-      {guests.length > 0 && (
-        <div className="guest-picker">
-          {guests.map((g, idx) => (
-            <div
-              key={g.idNumber}
-              className={`guest-tag ${selectedGuestIdx === idx ? 'active' : ''}`}
-              onClick={() => handleSelectGuest(idx)}
-            >
-              {g.name}
-            </div>
-          ))}
-          <div
-            className={`guest-tag ${selectedGuestIdx === null ? 'active' : ''}`}
-            onClick={() => handleSelectGuest(null)}
-          >
-            + 新住客
-          </div>
-        </div>
-      )}
+      <GuestPicker
+        guests={guests}
+        selectedIdx={selectedGuestIdx}
+        onSelect={handleSelectGuest}
+        onRemove={handleRemoveGuest}
+      />
 
       <UploadSection
         idFront={idFront}
