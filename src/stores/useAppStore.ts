@@ -1,68 +1,20 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import Taro from '@tarojs/taro'
-import i18n from 'i18next'
+import { UserSlice, createUserSlice } from './slices/userSlice'
+import { OrderSlice, createOrderSlice } from './slices/orderSlice'
+import { CheckinSlice, createCheckinSlice } from './slices/checkinSlice'
+import { HotelSlice, createHotelSlice } from './slices/hotelSlice'
+import { LanguageSlice, createLanguageSlice } from './slices/languageSlice'
 
-export type Language = 'zh' | 'en'
+// 合并所有 slice 类型
+export type AppState = UserSlice & OrderSlice & CheckinSlice & HotelSlice & LanguageSlice
 
-// 入住信息
-export interface StayInfo {
-  roomName: string
-  dateRange: string
-  nights: number
-  isCheckedIn: boolean
-}
-
-// 民宿配置
-export interface HotelConfig {
-  name: string
-  subtitle: string
-  heroImage: string
-  phone: string
-  checkInTime: string
-  checkOutTime: string
-}
-
-// 订单信息
-export interface Order {
-  orderId: string
-  roomName: string
-  checkInDate: string
-  checkOutDate: string
-}
-
-interface AppState {
-  // 当前入住信息
-  currentStay: StayInfo | null
-  setCurrentStay: (stay: StayInfo | null) => void
-
-  // 民宿配置
-  hotelConfig: HotelConfig
-  setHotelConfig: (config: Partial<HotelConfig>) => void
-
-  // 用户信息
-  userPhone: string | null
-  setUserPhone: (phone: string | null) => void
-
-  // 订单列表（不持久化，每次会话重新拉取）
-  // null = 未拉取, [] = 拉取了但没订单
-  orders: Order[] | null
-  setOrders: (orders: Order[] | null) => void
-
-  // 语言
-  language: Language
-  setLanguage: (lang: Language) => void
-}
-
-// 默认配置
-const defaultHotelConfig: HotelConfig = {
-  name: '悠然居',
-  subtitle: 'URBAN RETREAT · EST.2024',
-  heroImage: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800',
-  phone: '13800138000',
-  checkInTime: '14:00',
-  checkOutTime: '12:00',
-}
+// 重新导出类型，方便外部引用
+export type { Order, SelectedOrder } from './slices/orderSlice'
+export type { CheckinRecord } from './slices/checkinSlice'
+export type { StayInfo, HotelConfig } from './slices/hotelSlice'
+export type { Language } from './slices/languageSlice'
 
 // Taro Storage 适配器
 const taroStorage = createJSONStorage<AppState>(() => ({
@@ -73,38 +25,19 @@ const taroStorage = createJSONStorage<AppState>(() => ({
 
 export const useAppStore = create<AppState>()(
   persist(
-    (set) => ({
-      // 入住状态
-      currentStay: null,
-      setCurrentStay: (stay) => set({ currentStay: stay }),
-
-      // 民宿配置
-      hotelConfig: defaultHotelConfig,
-      setHotelConfig: (config) =>
-        set((state) => ({
-          hotelConfig: { ...state.hotelConfig, ...config },
-        })),
-
-      // 用户信息
-      userPhone: null,
-      setUserPhone: (phone) => set({ userPhone: phone }),
-
-      // 订单列表
-      orders: null,
-      setOrders: (orders) => set({ orders }),
-
-      // 语言
-      language: 'zh',
-      setLanguage: (lang) => {
-        i18n.changeLanguage(lang)
-        set({ language: lang })
-      },
+    (...a) => ({
+      ...createUserSlice(...a),
+      ...createOrderSlice(...a),
+      ...createCheckinSlice(...a),
+      ...createHotelSlice(...a),
+      ...createLanguageSlice(...a),
     }),
     {
       name: 'app-storage',
       storage: taroStorage,
       partialize: (state) => ({
         userPhone: state.userPhone,
+        selectedOrder: state.selectedOrder,
         language: state.language,
       }),
     }

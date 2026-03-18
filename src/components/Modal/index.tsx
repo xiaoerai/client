@@ -7,16 +7,16 @@ interface ModalProps {
   onClose: () => void
   children: ReactNode
   headerRight?: ReactNode
+  contentKey?: string
 }
 
-function Modal({ visible, title, onClose, children, headerRight }: ModalProps) {
+function Modal({ visible, title, onClose, children, headerRight, contentKey }: ModalProps) {
   const [mounted, setMounted] = useState(false)
   const [animating, setAnimating] = useState(false)
 
   useEffect(() => {
     if (visible) {
       setMounted(true)
-      // 下一帧再加动画 class，确保 DOM 已渲染
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setAnimating(true)
@@ -24,7 +24,6 @@ function Modal({ visible, title, onClose, children, headerRight }: ModalProps) {
       })
     } else {
       setAnimating(false)
-      // 等动画结束再卸载 DOM
       const timer = setTimeout(() => setMounted(false), 250)
       return () => clearTimeout(timer)
     }
@@ -45,7 +44,7 @@ function Modal({ visible, title, onClose, children, headerRight }: ModalProps) {
           </div>
           <div className="modal-close" onClick={onClose}>×</div>
         </div>
-        <div className="modal-body">
+        <div className="modal-body" key={contentKey}>
           {children}
         </div>
       </div>

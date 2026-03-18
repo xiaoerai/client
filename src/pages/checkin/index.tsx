@@ -3,23 +3,21 @@ import { useTranslation } from 'react-i18next'
 import Taro from '@tarojs/taro'
 import { checkinFormSchema, CheckinFormData } from '../../utils/schemas'
 import { recognizeIdCard } from '../../utils/ocr'
-import { useOrderAuth, useSelectedOrder } from '../../hooks/useOrderAuth'
+import { useOrderAuth } from '../../hooks/useOrderAuth'
 import { useAppStore } from '../../stores/useAppStore'
 import { createCheckIn } from '../../api'
 import NavBar from './components/NavBar'
 import FormSection from './components/FormSection'
 import UploadSection from './components/UploadSection'
-import DepositModal from './components/DepositModal'
 import './index.scss'
 
 function Checkin() {
   useOrderAuth() // 路由保护：需要已选择订单
   const { t } = useTranslation()
-  const selectedOrder = useSelectedOrder()
+  const selectedOrder = useAppStore((state) => state.selectedOrder)
+  const setCheckinRecord = useAppStore((state) => state.setCheckinRecord)
   const phone = useAppStore((state) => state.userPhone) || ''
   const [submitting, setSubmitting] = useState(false)
-  const [showDeposit, setShowDeposit] = useState(false)
-  const [paying, setPaying] = useState(false)
   const [form, setForm] = useState<CheckinFormData>({
     name: '',
     idNumber: '',
@@ -105,7 +103,9 @@ function Checkin() {
       })
 
       if (result) {
-        setShowDeposit(true)
+        // 存入全局状态，首页检测到后自动弹押金弹窗
+        setCheckinRecord(result)
+        Taro.navigateBack()
       } else {
         Taro.showToast({ title: '提交失败，请重试', icon: 'none' })
       }
@@ -114,34 +114,6 @@ function Checkin() {
     } finally {
       setSubmitting(false)
     }
-  }
-
-  // TODO: 押金金额后续从后端获取
-  const depositAmount = 500
-
-  // 支付宝原生支付
-  const handlePay = async () => {
-    setPaying(true)
-    try {
-      // TODO: 调用后端创建支付订单，获取支付参数
-      // const payParams = await createDeposit({ orderId: selectedOrder!.orderId })
-      // await Taro.tradePay({ orderStr: payParams.orderStr })
-
-      // 支付成功，跳转成功页
-      Taro.redirectTo({ url: '/pages/success/index' })
-    } catch {
-      Taro.showToast({ title: '支付失败，请重试', icon: 'none' })
-    } finally {
-      setPaying(false)
-    }
-  }
-
-  // 微信支付（通过收钱吧 H5 页面跳转）
-  const handleWechatPay = () => {
-    // TODO: 调用后端获取收钱吧 H5 微信支付链接
-    // const payUrl = await createDepositH5({ orderId: selectedOrder!.orderId, channel: 'wechat' })
-    // Taro.navigateTo({ url: `/pages/webview/index?url=${encodeURIComponent(payUrl)}` })
-    Taro.showToast({ title: '暂未开放', icon: 'none' })
   }
 
   return (
@@ -161,18 +133,6 @@ function Checkin() {
           {submitting ? '提交中...' : t('checkin.nextStep')}
         </div>
       </div>
-
-      <DepositModal
-        visible={showDeposit}
-        roomName={selectedOrder?.roomName || ''}
-        checkInDate={selectedOrder?.checkInDate || ''}
-        checkOutDate={selectedOrder?.checkOutDate || ''}
-        depositAmount={depositAmount}
-        paying={paying}
-        onPay={handlePay}
-        onWechatPay={handleWechatPay}
-        onClose={() => setShowDeposit(false)}
-      />
     </div>
   )
 }
