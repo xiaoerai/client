@@ -55,19 +55,21 @@ export function useCheckinFlow(onNavigate: (target: 'checkin' | 'success') => vo
     }
   }, [countdown])
 
-  // 打开时决定初始 step
+  // 打开时决定初始 step（deposit 由 checkinRecord effect 触发，不覆盖）
   useEffect(() => {
     if (visible) {
-      const { userPhone: currentPhone, orders: cachedOrders } = useAppStore.getState()
-      if (currentPhone) {
-        setPhone(currentPhone)
-        if (cachedOrders !== null) {
-          setStep('orders')
+      if (step !== 'deposit') {
+        const { userPhone: currentPhone, orders: cachedOrders } = useAppStore.getState()
+        if (currentPhone) {
+          setPhone(currentPhone)
+          if (cachedOrders !== null) {
+            setStep('orders')
+          } else {
+            fetchOrders(currentPhone)
+          }
         } else {
-          fetchOrders(currentPhone)
+          setStep('phone')
         }
-      } else {
-        setStep('phone')
       }
     } else {
       setStep('loading')
