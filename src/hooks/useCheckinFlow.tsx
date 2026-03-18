@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import Taro from '@tarojs/taro'
 import Input from '../components/Input'
 import { useAppStore, Order } from '../stores/useAppStore'
-import { sendSmsCode, login, getOrders, getCheckIn } from '../api'
+import { sendSmsCode, login, getOrders, getCheckIn, createDeposit, confirmDeposit } from '../api'
 
 type Step = 'loading' | 'phone' | 'orders' | 'deposit'
 
@@ -169,11 +169,39 @@ export function useCheckinFlow(onNavigate: (target: 'checkin' | 'success') => vo
   }
 
   const handlePay = async () => {
+    const orderId = selectedOrder?.orderId
+    if (!orderId) return
+
     setPaying(true)
     try {
-      // TODO: 调用后端创建支付订单
+      // 1. 创建支付订单
+      const payment = await createDeposit(orderId, 'alipay')
+      if (!payment) {
+        Taro.showToast({ title: '创建支付订单失败', icon: 'none' })
+        return
+      }
+
+      // 2. 调起支付宝支付（H5 环境 mock，直接跳过）
+      if (process.env.TARO_ENV !== 'h5') {
+        // @ts-ignore - 支付宝小程序 API
+        await Taro.tradePay({ tradeNO: payment.tradeNO })
+      }
+
+      // 3. 确认支付
+      // [MOCK] 真实环境由收钱吧回调后端触发，前端不调此接口
+      // 接入真实支付后删除此行，改为轮询或监听支付状态
+      const result = await confirmDeposit(orderId, payment.tradeNO)
+      if (!result) {
+        Taro.showToast({ title: '支付确认失败', icon: 'none' })
+        return
+      }
+
+      // 4. 更新全局状态
+      setCheckinRecord(result.checkin)
+
+      // 5. 跳转成功页
       close()
-      Taro.redirectTo({ url: '/pages/success/index' })
+      onNavigate('success')
     } catch {
       Taro.showToast({ title: '支付失败，请重试', icon: 'none' })
     } finally {
@@ -181,8 +209,35 @@ export function useCheckinFlow(onNavigate: (target: 'checkin' | 'success') => vo
     }
   }
 
-  const handleWechatPay = () => {
-    Taro.showToast({ title: '暂未开放', icon: 'none' })
+  const handleWechatPay = async () => {
+    const orderId = selectedOrder?.orderId
+    if (!orderId) return
+
+    setPaying(true)
+    try {
+      // 1. 创建支付订单（微信渠道）
+      const payment = await createDeposit(orderId, 'wechat')
+      if (!payment) {
+        Taro.showToast({ title: '创建支付订单失败', icon: 'none' })
+        return
+      }
+
+      // TODO: 跳转收钱吧 H5 微信支付页面
+      // [MOCK] 真实环境由收钱吧回调后端触发，前端不调此接口
+      const result = await confirmDeposit(orderId, payment.tradeNO)
+      if (!result) {
+        Taro.showToast({ title: '支付确认失败', icon: 'none' })
+        return
+      }
+
+      setCheckinRecord(result.checkin)
+      close()
+      onNavigate('success')
+    } catch {
+      Taro.showToast({ title: '支付失败，请重试', icon: 'none' })
+    } finally {
+      setPaying(false)
+    }
   }
 
   const formatDate = (dateStr: string) => {

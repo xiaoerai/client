@@ -26,3 +26,7 @@ export {
   updateCheckIn,
 } from './checkin'
 export type { GuestInput, CheckInRecord, CreateCheckInParams, UpdateCheckInParams } from './checkin'
+
+// 押金 API
+export { createDeposit, confirmDeposit } from './deposit'
+export type { PayChannel, CreatePaymentResult, ConfirmPaymentResult } from './deposit'
