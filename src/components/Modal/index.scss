@@ -276,3 +276,33 @@
   color: $text-muted;
   margin-top: $spacing-md;
 }
+
+// --- 入住成功 ---
+
+.step-success {
+  text-align: center;
+  padding: $spacing-xl 0;
+}
+
+.success-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto $spacing-lg;
+  border-radius: 50%;
+  background: $accent;
+  color: $bg-dark;
+  font-size: $font-size-2xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-message {
+  font-size: $font-size-lg;
+  color: $text-primary;
+  margin-bottom: $spacing-2xl;
+}
+
+.step-success .btn-primary {
+  @include btn-primary;
+}

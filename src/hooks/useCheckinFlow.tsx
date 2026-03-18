@@ -5,7 +5,7 @@ import Input from '../components/Input'
 import { useAppStore, Order } from '../stores/useAppStore'
 import { sendSmsCode, login, getOrders, getCheckIn, createDeposit, confirmDeposit } from '../api'
 
-type Step = 'loading' | 'phone' | 'orders' | 'deposit'
+type Step = 'loading' | 'phone' | 'orders' | 'deposit' | 'success'
 
 interface CheckinFlowResult {
   visible: boolean
@@ -58,7 +58,7 @@ export function useCheckinFlow(onNavigate: (target: 'checkin' | 'success') => vo
   // 打开时决定初始 step（deposit 由 checkinRecord effect 触发，不覆盖）
   useEffect(() => {
     if (visible) {
-      if (step !== 'deposit') {
+      if (step !== 'deposit' && step !== 'success') {
         const { userPhone: currentPhone, orders: cachedOrders } = useAppStore.getState()
         if (currentPhone) {
           setPhone(currentPhone)
@@ -158,8 +158,7 @@ export function useCheckinFlow(onNavigate: (target: 'checkin' | 'success') => vo
       setStep('deposit')
     } else {
       setCheckinRecord(record)
-      close()
-      onNavigate('success')
+      setStep('success')
     }
   }
 
@@ -201,9 +200,8 @@ export function useCheckinFlow(onNavigate: (target: 'checkin' | 'success') => vo
       // 4. 更新全局状态
       setCheckinRecord(result.checkin)
 
-      // 5. 跳转成功页
-      close()
-      onNavigate('success')
+      // 5. 显示成功
+      setStep('success')
     } catch {
       Taro.showToast({ title: '支付失败，请重试', icon: 'none' })
     } finally {
@@ -233,8 +231,7 @@ export function useCheckinFlow(onNavigate: (target: 'checkin' | 'success') => vo
       }
 
       setCheckinRecord(result.checkin)
-      close()
-      onNavigate('success')
+      setStep('success')
     } catch {
       Taro.showToast({ title: '支付失败，请重试', icon: 'none' })
     } finally {
@@ -253,6 +250,7 @@ export function useCheckinFlow(onNavigate: (target: 'checkin' | 'success') => vo
     phone: '验证手机号',
     orders: '选择订单',
     deposit: t('deposit.title', '押金支付'),
+    success: t('success.title', '入住成功'),
   }
 
   // headerRight
@@ -380,6 +378,18 @@ export function useCheckinFlow(onNavigate: (target: 'checkin' | 'success') => vo
 
         <div className="deposit-tip">
           {t('deposit.tip', '押金将在退房后原路退回')}
+        </div>
+      </div>
+    )
+  }
+
+  if (step === 'success') {
+    content = (
+      <div className="step-success">
+        <div className="success-icon">✓</div>
+        <div className="success-message">{t('success.message', '祝您入住愉快')}</div>
+        <div className="btn-primary" onClick={close}>
+          {t('success.confirm', '我知道了')}
         </div>
       </div>
     )
