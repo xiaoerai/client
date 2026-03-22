@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import Taro from '@tarojs/taro'
 import { useAppStore } from '../../stores/useAppStore'
-import { createDeposit, confirmDeposit } from '../../api'
+import { createDeposit, getDepositStatus } from '../../api'
 import type { PayChannel } from '../../api'
 
 interface UseDepositStepOptions {
   onSuccess: () => void
 }
 
-export function useDepositStep({ onSuccess }: UseDepositStepOptions) {
+export function useDepositStepMock({ onSuccess }: UseDepositStepOptions) {
   const selectedOrder = useAppStore((state) => state.selectedOrder)
   const setCheckinRecord = useAppStore((state) => state.setCheckinRecord)
 
@@ -62,4 +62,49 @@ export function useDepositStep({ onSuccess }: UseDepositStepOptions) {
     payAlipay: () => pay('alipay'),
     payWechat: () => pay('wechat'),
   }
+}
+
+export function useDepositStep({ onSuccess }: UseDepositStepOptions) {
+  const selectedOrder = useAppStore((state) => state.selectedOrder)
+  const setCheckinRecord = useAppStore((state) => state.setCheckinRecord)
+  const [paying, setPaying] = useState(false)
+  const depositAmount = 500
+
+  const payAlipay = async () => {
+    const orderId = selectedOrder?.orderId
+    if (!orderId) return
+
+    if (process.env.TARO_ENV === 'h5') {
+      Taro.showToast({ title: '请在支付宝小程序支付', icon: 'none' })
+      return
+    }
+
+    setPaying(true)
+    try {
+      const payment = await createDeposit(orderId, 'alipay')
+      if (!payment || !payment.orderStr) {
+        Taro.showToast({ title: '支付参数异常', icon: 'none' })
+        return
+      }
+
+      // @ts-ignore - 支付宝小程序 API
+      await Taro.tradePay({ orderStr: payment.orderStr })
+
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+      const status = await getDepositStatus(orderId)
+      if (status?.status !== 'paid') {
+        Taro.showToast({ title: '支付结果待确认，请刷新页面', icon: 'none', duration: 3000 })
+        return
+      }
+
+      if (status.checkin) setCheckinRecord(status.checkin)
+      onSuccess()
+    } catch {
+      Taro.showToast({ title: '支付失败，请重试', icon: 'none' })
+    } finally {
+      setPaying(false)
+    }
+  }
+
+  return { selectedOrder, paying, depositAmount, payAlipay }
 }

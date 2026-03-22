@@ -1,4 +1,4 @@
-import { post } from './request'
+import { post, get } from './request'
 import type { CheckInRecord } from './checkin'
 
 export type PayChannel = 'alipay' | 'wechat'
@@ -9,20 +9,14 @@ export interface CreatePaymentResult {
   orderId: string
   amount: number // 分
   channel: PayChannel
+  orderStr?: string
 }
 
-// 确认支付结果
-export interface ConfirmPaymentResult {
-  checkin: CheckInRecord
-  deposit: {
-    _id: string
-    orderId: string
-    amount: number
-    channel: PayChannel
-    status: 'created' | 'paid' | 'refunded'
-    transactionId?: string
-    paidAt?: string
-  }
+// 押金状态查询结果
+export interface DepositStatusResult {
+  status: 'created' | 'paid' | 'refunded'
+  paidAt?: string
+  checkin?: CheckInRecord
 }
 
 /**
@@ -40,13 +34,10 @@ export async function createDeposit(
 }
 
 /**
- * 确认支付成功
+ * 查询押金状态
  */
-export async function confirmDeposit(
-  orderId: string,
-  transactionId: string
-): Promise<ConfirmPaymentResult | null> {
-  const res = await post<ConfirmPaymentResult>('/api/deposit/confirm', { orderId, transactionId })
+export async function getDepositStatus(orderId: string): Promise<DepositStatusResult | null> {
+  const res = await get<DepositStatusResult>(`/api/deposit/${orderId}/status`)
   if (res.success && res.data) {
     return res.data
   }
