@@ -220,12 +220,14 @@ export function useCheckinFlow(onNavigate: (target: 'checkin' | 'success') => vo
           {deposit.paying ? t('deposit.paying', '支付中...') : t('deposit.pay', '支付宝支付')}
         </div>
 
+        {/* 微信支付待收钱吧接入后开放
         <div
           className={`btn-secondary deposit-wechat-btn ${deposit.paying ? 'loading' : ''}`}
           onClick={deposit.paying ? undefined : deposit.payWechat}
         >
           {t('deposit.wechatPay', '微信支付')}
         </div>
+        */}
 
         <div className="deposit-tip">
           {t('deposit.tip', '押金将在退房后原路退回')}
