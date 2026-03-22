@@ -31,7 +31,12 @@ export function useDepositStep({ onSuccess }: UseDepositStepOptions) {
       }
 
       // @ts-ignore - 支付宝小程序 API
-      await Taro.tradePay({ orderStr: payment.orderStr })
+      const tradeResult = await Taro.tradePay({ orderStr: payment.orderStr }) as { resultCode: string }
+      // 9000 成功，8000 处理中，其余为取消或失败
+      if (tradeResult.resultCode !== '9000' && tradeResult.resultCode !== '8000') {
+        Taro.showToast({ title: '支付已取消', icon: 'none' })
+        return
+      }
 
       await new Promise((resolve) => setTimeout(resolve, 1500))
       const status = await getDepositStatus(orderId)
