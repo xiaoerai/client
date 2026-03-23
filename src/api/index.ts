@@ -15,10 +15,9 @@ export type { Order } from './auth'
 export {
   getOrders,
   getOrderDetail,
-  submitCheckin,
   getRoomInfo,
 } from './orders'
-export type { OrderDetail, RoomInfo, GuestInfo } from './orders'
+export type { OrderDetail, RoomInfo } from './orders'
 
 // 入住 API
 export {
@@ -27,3 +26,11 @@ export {
   updateCheckIn,
 } from './checkin'
 export type { GuestInput, CheckInRecord, CreateCheckInParams, UpdateCheckInParams } from './checkin'
+
+// 押金 API
+export { createDeposit, getDepositStatus } from './deposit'
+export type { PayChannel, CreatePaymentResult, DepositStatusResult } from './deposit'
+
+// 用户 API
+export { getMyGuests, removeMyGuest } from './user'
+export type { CachedGuest } from './user'

@@ -1,0 +1,314 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// ============================================
+// Modal 容器
+// ============================================
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: $spacing-lg;
+  transition: background 0.25s ease;
+
+  .modal-content {
+    transform: scale(0.9);
+    opacity: 0;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+
+  &.modal-enter {
+    background: rgba(0, 0, 0, 0.8);
+
+    .modal-content {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  &.modal-exit {
+    background: rgba(0, 0, 0, 0);
+
+    .modal-content {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+  }
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 320px;
+  background: $bg-card;
+  border-radius: $radius-lg;
+  border: 1px solid $border-color;
+  overflow: hidden;
+  position: relative;
+  z-index: 1001;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-lg;
+  border-bottom: 1px solid $border-subtle;
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-normal;
+  color: $accent;
+}
+
+.modal-close {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: $text-muted;
+  cursor: pointer;
+
+  &:active {
+    color: $text-primary;
+  }
+}
+
+.modal-body {
+  padding: $spacing-lg;
+  animation: modalBodyFadeIn 0.4s ease;
+}
+
+@keyframes modalBodyFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ============================================
+// Modal 内容样式（各 step 通用）
+// ============================================
+
+// --- 通用 ---
+
+.refresh-btn {
+  font-size: 14px;
+  color: $text-muted;
+  cursor: pointer;
+
+  &:active {
+    color: $text-primary;
+  }
+}
+
+.step-loading {
+  padding: $spacing-xl 0;
+  text-align: center;
+  color: $text-muted;
+  font-size: $font-size-base;
+}
+
+// --- 手机号验证 ---
+
+.step-phone {
+  position: relative;
+  z-index: 10;
+
+  .input-wrapper {
+    margin-bottom: $spacing-lg;
+    position: relative;
+    z-index: 11;
+  }
+
+  .btn-primary {
+    @include btn-primary;
+    margin-top: $spacing-sm;
+  }
+}
+
+.code-btn {
+  flex-shrink: 0;
+  min-width: 100px;
+  height: $input-height;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid $accent;
+  border-radius: $radius-sm;
+  font-size: $font-size-base;
+  color: $accent;
+  cursor: pointer;
+
+  &:active {
+    background: $accent-hover;
+  }
+
+  &.disabled {
+    border-color: $border-color;
+    color: $text-muted;
+    pointer-events: none;
+  }
+}
+
+// --- 选择订单 ---
+
+.change-phone {
+  @include btn-primary;
+  margin-top: $spacing-lg;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.order-card {
+  @include card-light;
+  padding: $spacing-lg;
+  cursor: pointer;
+  transition: border-color $transition-fast;
+
+  &:active {
+    border-color: $accent;
+  }
+}
+
+.order-room {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-normal;
+  color: $text-primary;
+  margin-bottom: 2px;
+}
+
+.order-date {
+  @include subtitle-label;
+}
+
+// --- 押金支付 ---
+
+.deposit-info {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding-bottom: $spacing-lg;
+  border-bottom: 1px solid $border-subtle;
+}
+
+.deposit-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.deposit-label {
+  font-size: $font-size-base;
+  color: $text-muted;
+}
+
+.deposit-value {
+  font-size: $font-size-base;
+  color: $text-primary;
+}
+
+.deposit-amount-section {
+  padding: $spacing-xl 0;
+  text-align: center;
+}
+
+.deposit-amount-label {
+  font-size: $font-size-sm;
+  color: $text-muted;
+  letter-spacing: $letter-spacing-sm;
+  margin-bottom: $spacing-sm;
+}
+
+.deposit-amount {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.deposit-currency {
+  font-size: $font-size-xl;
+  color: $accent;
+  font-weight: $font-weight-light;
+  margin-right: 2px;
+}
+
+.deposit-number {
+  font-size: $font-size-3xl;
+  color: $accent;
+  font-weight: $font-weight-light;
+}
+
+.deposit-pay-btn {
+  @include btn-primary;
+}
+
+.deposit-wechat-btn {
+  @include btn-secondary;
+  margin-top: $spacing-md;
+}
+
+.deposit-tip {
+  text-align: center;
+  font-size: $font-size-sm;
+  color: $text-muted;
+  margin-top: $spacing-md;
+}
+
+// --- 入住成功 ---
+
+.step-success {
+  text-align: center;
+  padding: $spacing-xl 0;
+}
+
+.success-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto $spacing-lg;
+  border-radius: 50%;
+  background: $accent;
+  color: $bg-dark;
+  font-size: $font-size-2xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-message {
+  font-size: $font-size-lg;
+  color: $text-primary;
+  margin-bottom: $spacing-sm;
+}
+
+.success-hint {
+  font-size: $font-size-sm;
+  color: $text-muted;
+  margin-bottom: $spacing-2xl;
+}
+
+.step-success .btn-primary {
+  @include btn-primary;
+}

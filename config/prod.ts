@@ -1,10 +1,10 @@
 import type { UserConfigExport } from "@tarojs/cli";
 export default {
   defineConstants: {
-    // 生产环境不需要 API 地址（用云托管内网调用）
-    API_BASE_URL: JSON.stringify(''),
-    // 微信云环境 ID（需要替换为实际值）
-    CLOUD_ENV_ID: JSON.stringify('prod-xxx'),
+    // 生产环境 API 地址（阿里云 FC）
+    API_BASE_URL: JSON.stringify('https://xiaoer-server-dodtzpbsbz.cn-shanghai.fcapp.run'),
+    // 微信云环境 ID（暂不使用）
+    CLOUD_ENV_ID: JSON.stringify(''),
   },
   mini: {},
   h5: {

@@ -1,4 +1,4 @@
-import { get, post } from './request'
+import { get } from './request'
 import type { Order } from './auth'
 
 // 订单详情（包含房间信息）
@@ -6,7 +6,6 @@ export interface OrderDetail extends Order {
   hotelId: string
   depositStatus: 'unpaid' | 'paid' | 'refunded'
   status: 'pending' | 'checked_in' | 'checked_out'
-  depositAmount?: number
 }
 
 // 房间信息（入住成功后展示）
@@ -43,23 +42,6 @@ export async function getOrders(phone: string): Promise<Order[]> {
  */
 export async function getOrderDetail(orderId: string): Promise<OrderDetail | null> {
   const res = await get<OrderDetail>(`/api/orders/${orderId}`)
-  if (res.success && res.data) {
-    return res.data
-  }
-  return null
-}
-
-/**
- * 提交入住信息
- */
-export async function submitCheckin(
-  orderId: string,
-  guests: GuestInfo[]
-): Promise<{ depositAmount: number } | null> {
-  const res = await post<{ depositAmount: number }>('/api/checkin', {
-    orderId,
-    guests,
-  })
   if (res.success && res.data) {
     return res.data
   }

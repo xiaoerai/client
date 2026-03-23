@@ -1,20 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import Taro from '@tarojs/taro'
 import { checkinFormSchema, CheckinFormData } from '../../utils/schemas'
 import { recognizeIdCard } from '../../utils/ocr'
-import { useOrderAuth, useSelectedOrder } from '../../hooks/useOrderAuth'
+import { useOrderAuth } from '../../hooks/useOrderAuth'
 import { useAppStore } from '../../stores/useAppStore'
-import { createCheckIn } from '../../api'
+import { createCheckIn, getMyGuests, removeMyGuest } from '../../api'
+import type { CachedGuest } from '../../api'
 import NavBar from './components/NavBar'
 import FormSection from './components/FormSection'
 import UploadSection from './components/UploadSection'
+import GuestPicker from './components/GuestPicker'
 import './index.scss'
 
 function Checkin() {
   useOrderAuth() // 路由保护：需要已选择订单
   const { t } = useTranslation()
-  const selectedOrder = useSelectedOrder()
+  const selectedOrder = useAppStore((state) => state.selectedOrder)
+  const setCheckinRecord = useAppStore((state) => state.setCheckinRecord)
   const phone = useAppStore((state) => state.userPhone) || ''
   const [submitting, setSubmitting] = useState(false)
   const [form, setForm] = useState<CheckinFormData>({
@@ -23,6 +26,42 @@ function Checkin() {
   })
   const [idFront, setIdFront] = useState('')
   const [isRecognizing, setIsRecognizing] = useState(false)
+  const [guests, setGuests] = useState<CachedGuest[]>([])
+  const [selectedGuestIdx, setSelectedGuestIdx] = useState<number | null>(null)
+
+  // 加载历史住客
+  useEffect(() => {
+    if (!phone) return
+    getMyGuests(phone).then((list) => {
+      if (list.length > 0) {
+        setGuests(list)
+        setSelectedGuestIdx(0)
+        setForm({ name: list[0].name, idNumber: list[0].idNumber })
+      }
+    }).catch(() => {})
+  }, [phone])
+
+  const handleSelectGuest = (idx: number | null) => {
+    setSelectedGuestIdx(idx)
+    if (idx !== null && guests[idx]) {
+      setForm({ name: guests[idx].name, idNumber: guests[idx].idNumber })
+    } else {
+      setForm({ name: '', idNumber: '' })
+    }
+  }
+
+  const handleRemoveGuest = (idx: number) => {
+    const guest = guests[idx]
+    // 先更新 UI，后端异步处理
+    const updated = guests.filter((_, i) => i !== idx)
+    setGuests(updated)
+    if (selectedGuestIdx === idx) {
+      handleSelectGuest(updated.length > 0 ? 0 : null)
+    } else if (selectedGuestIdx !== null && selectedGuestIdx > idx) {
+      setSelectedGuestIdx(selectedGuestIdx - 1)
+    }
+    removeMyGuest(phone, guest.idNumber).catch(() => {})
+  }
 
   const handleBack = () => {
     Taro.navigateBack()
@@ -102,7 +141,9 @@ function Checkin() {
       })
 
       if (result) {
-        Taro.navigateTo({ url: '/pages/deposit/index' })
+        // 存入全局状态，首页检测到后自动弹押金弹窗
+        setCheckinRecord(result)
+        Taro.navigateBack()
       } else {
         Taro.showToast({ title: '提交失败，请重试', icon: 'none' })
       }
@@ -116,6 +157,13 @@ function Checkin() {
   return (
     <div className="checkin-page">
       <NavBar title={t('guestInfo.title')} onBack={handleBack} />
+
+      <GuestPicker
+        guests={guests}
+        selectedIdx={selectedGuestIdx}
+        onSelect={handleSelectGuest}
+        onRemove={handleRemoveGuest}
+      />
 
       <UploadSection
         idFront={idFront}
