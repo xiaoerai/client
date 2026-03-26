@@ -1,4 +1,12 @@
 import Taro from '@tarojs/taro'
+
+declare const my: {
+  getAuthCode(opts: {
+    scopes: string
+    success: (res: { authCode: string }) => void
+    fail: (err: unknown) => void
+  }): void
+}
 import { post } from './request'
 
 // 订单信息
@@ -37,25 +45,44 @@ export async function login(
   phone: string,
   smsCode: string
 ): Promise<string | null> {
-  // 获取微信 login code
-  let wxCode = ''
-  if (process.env.TARO_ENV === 'h5') {
-    // H5 开发模式：使用手机号生成固定的 mock code，避免重复创建用户
-    wxCode = `h5_mock_${phone}`
-  } else {
+  // 获取平台授权码
+  let authCode = ''
+  let platform: 'alipay' | 'wechat' | 'h5' = 'h5'
+
+  if (process.env.TARO_ENV === 'alipay') {
+    platform = 'alipay'
+    try {
+      const authRes = await new Promise<{ authCode: string }>((resolve, reject) => {
+        my.getAuthCode({
+          scopes: 'auth_base',
+          success: (res: { authCode: string }) => resolve(res),
+          fail: (err: unknown) => reject(err),
+        })
+      })
+      authCode = authRes.authCode
+    } catch (error) {
+      console.error('[Auth] getAuthCode 失败:', error)
+      return null
+    }
+  } else if (process.env.TARO_ENV === 'weapp') {
+    platform = 'wechat'
     try {
       const loginRes = await Taro.login()
-      wxCode = loginRes.code
+      authCode = loginRes.code
     } catch (error) {
       console.error('[Auth] wx.login 失败:', error)
       return null
     }
+  } else {
+    platform = 'h5'
+    authCode = `h5_mock_${phone}`
   }
 
   const res = await post<LoginResponse>('/api/auth/login', {
     phone,
     smsCode,
-    code: wxCode,
+    code: authCode,
+    platform,
   })
 
   if (res.success && res.data) {

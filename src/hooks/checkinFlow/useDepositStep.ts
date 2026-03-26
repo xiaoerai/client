@@ -25,13 +25,13 @@ export function useDepositStep({ onSuccess }: UseDepositStepOptions) {
     setPaying(true)
     try {
       const payment = await createDeposit(orderId, 'alipay')
-      if (!payment || !payment.orderStr) {
+      if (!payment || !payment.tradeNO) {
         Taro.showToast({ title: '支付参数异常', icon: 'none' })
         return
       }
 
       // @ts-ignore - 支付宝小程序 API
-      const tradeResult = await Taro.tradePay({ orderStr: payment.orderStr }) as { resultCode: string }
+      const tradeResult = await Taro.tradePay({ tradeNO: payment.tradeNO }) as { resultCode: string }
       // 9000 成功，8000 处理中，其余为取消或失败
       if (tradeResult.resultCode !== '9000' && tradeResult.resultCode !== '8000') {
         Taro.showToast({ title: '支付已取消', icon: 'none' })
