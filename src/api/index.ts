@@ -24,6 +24,7 @@ export {
   createCheckIn,
   getCheckIn,
   updateCheckIn,
+  checkout,
 } from './checkin'
 export type { GuestInput, CheckInRecord, CreateCheckInParams, UpdateCheckInParams } from './checkin'
 

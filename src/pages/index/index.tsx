@@ -19,7 +19,7 @@ function Index() {
   const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState('home')
   const { navigateTo, makeCall } = useNavigate()
-  const { checkinRecord, hotelConfig } = useAppStore()
+  const { checkinRecord, setCheckinRecord, hotelConfig } = useAppStore()
 
   const flow = useCheckinFlow((target) => navigateTo(target))
 
@@ -47,10 +47,20 @@ function Index() {
     Taro.showModal({
       title: '确认退房',
       content: '确认要退房吗？押金将在房东确认后退还。',
-      success: (res) => {
-        if (res.confirm) {
-          // TODO: 调后端退房接口
-          Taro.showToast({ title: '退房申请已提交', icon: 'success' })
+      success: async (res) => {
+        if (res.confirm && checkinRecord) {
+          try {
+            const { checkout } = await import('../../api')
+            const success = await checkout(checkinRecord.hostexOrderId)
+            if (success) {
+              setCheckinRecord(null)
+              Taro.showToast({ title: '退房成功', icon: 'success' })
+            } else {
+              Taro.showToast({ title: '退房失败，请重试', icon: 'none' })
+            }
+          } catch {
+            Taro.showToast({ title: '退房失败，请重试', icon: 'none' })
+          }
         }
       },
     })

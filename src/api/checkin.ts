@@ -74,3 +74,11 @@ export async function updateCheckIn(orderId: string, params: UpdateCheckInParams
   })
   return res.success
 }
+
+/**
+ * 退房
+ */
+export async function checkout(orderId: string): Promise<boolean> {
+  const res = await post('/api/checkin/checkout', { orderId })
+  return res.success
+}
