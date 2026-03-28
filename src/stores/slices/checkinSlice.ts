@@ -3,11 +3,12 @@ import { StateCreator } from 'zustand'
 export interface CheckinRecord {
   _id: string
   hostexOrderId: string
-  roomId: string
+  roomNumber: string
   roomName: string
   phone: string
   checkInDate: string
   checkOutDate: string
+  ota?: string
   guestIds: string[]
   depositPaid: boolean
   status: 'pending' | 'checked_in' | 'checkout_pending' | 'checked_out' | 'refunded'

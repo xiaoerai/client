@@ -5,6 +5,10 @@ export interface Order {
   roomName: string
   checkInDate: string
   checkOutDate: string
+  houseId?: number
+  ota?: string
+  pms?: string
+  pmsRoomId?: string
 }
 
 export interface SelectedOrder {
@@ -12,6 +16,10 @@ export interface SelectedOrder {
   roomName: string
   checkInDate: string
   checkOutDate: string
+  houseId?: number
+  ota?: string
+  pms?: string
+  pmsRoomId?: string
 }
 
 export interface OrderSlice {

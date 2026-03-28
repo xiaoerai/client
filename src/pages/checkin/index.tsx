@@ -128,11 +128,13 @@ function Checkin() {
     try {
       const result = await createCheckIn({
         orderId: selectedOrder.orderId,
-        roomId: selectedOrder.orderId, // 暂用 orderId
+        pmsRoomId: selectedOrder.pmsRoomId || String(selectedOrder.houseId || ''),
+        pms: selectedOrder.pms || 'hostex',
         roomName: selectedOrder.roomName,
         phone,
         checkInDate: selectedOrder.checkInDate,
         checkOutDate: selectedOrder.checkOutDate,
+        ota: selectedOrder.ota,
         guest: {
           name: form.name,
           idNumber: form.idNumber,

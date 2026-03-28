@@ -11,11 +11,12 @@ export interface GuestInput {
 export interface CheckInRecord {
   _id: string
   hostexOrderId: string
-  roomId: string
+  roomNumber: string
   roomName: string
   phone: string
   checkInDate: string
   checkOutDate: string
+  ota?: string
   guestIds: string[]
   depositPaid: boolean
   status: 'pending' | 'checked_in' | 'checked_out'
@@ -26,11 +27,13 @@ export interface CheckInRecord {
 // 创建入住记录参数
 export interface CreateCheckInParams {
   orderId: string
-  roomId: string
+  pmsRoomId: string
+  pms: string
   roomName: string
   phone: string
   checkInDate: string
   checkOutDate: string
+  ota?: string
   guest: GuestInput
 }
 
