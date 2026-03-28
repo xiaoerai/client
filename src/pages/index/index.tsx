@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import Taro from '@tarojs/taro'
 // 页面私有组件
 import Hero from './components/Hero'
 import StayCard from './components/StayCard'
@@ -18,20 +19,12 @@ function Index() {
   const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState('home')
   const { navigateTo, makeCall } = useNavigate()
-  const { currentStay, hotelConfig, setCurrentStay } = useAppStore()
+  const { checkinRecord, hotelConfig } = useAppStore()
 
   const flow = useCheckinFlow((target) => navigateTo(target))
 
-  // 模拟加载入住数据
-  useEffect(() => {
-    // TODO: 从 API 获取真实数据
-    setCurrentStay({
-      roomName: '温馨大床房',
-      dateRange: '3.08 - 3.10',
-      nights: 2,
-      isCheckedIn: true,
-    })
-  }, [setCurrentStay])
+  const showStayCard = checkinRecord &&
+    (checkinRecord.status === 'checked_in' || checkinRecord.status === 'checkout_pending')
 
   const handleFeatureClick = (id: string) => {
     const routeMap: Record<string, () => void> = {
@@ -50,6 +43,19 @@ function Index() {
     navigateTo('success')
   }
 
+  const handleCheckout = () => {
+    Taro.showModal({
+      title: '确认退房',
+      content: '确认要退房吗？押金将在房东确认后退还。',
+      success: (res) => {
+        if (res.confirm) {
+          // TODO: 调后端退房接口
+          Taro.showToast({ title: '退房申请已提交', icon: 'success' })
+        }
+      },
+    })
+  }
+
   return (
     <div className="page">
       <Hero
@@ -59,10 +65,11 @@ function Index() {
       />
 
       <div className="main-content">
-        {currentStay && (
+        {showStayCard && (
           <StayCard
-            stay={currentStay}
+            record={checkinRecord}
             onShowPassword={handleShowPassword}
+            onCheckout={handleCheckout}
           />
         )}
 

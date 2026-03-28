@@ -5,6 +5,7 @@ export default {
     API_BASE_URL: JSON.stringify('http://localhost:7001'),
     // 微信云环境 ID（开发环境留空，用 H5 调试）
     CLOUD_ENV_ID: JSON.stringify(''),
+    SKIP_DEPOSIT: JSON.stringify(true),
   },
   mini: {},
   h5: {}

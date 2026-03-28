@@ -3,6 +3,8 @@ import Taro from '@tarojs/taro'
 import { useAppStore } from '../../stores/useAppStore'
 import { createDeposit, getDepositStatus } from '../../api'
 
+declare const SKIP_DEPOSIT: boolean | undefined
+
 interface UseDepositStepOptions {
   onSuccess: () => void
 }
@@ -16,6 +18,13 @@ export function useDepositStep({ onSuccess }: UseDepositStepOptions) {
   const payAlipay = async () => {
     const orderId = selectedOrder?.orderId
     if (!orderId) return
+
+    // 开发环境跳过押金
+    if (typeof SKIP_DEPOSIT !== 'undefined' && SKIP_DEPOSIT) {
+      console.log('[Deposit] 开发环境跳过押金')
+      onSuccess()
+      return
+    }
 
     if (process.env.TARO_ENV === 'h5') {
       Taro.showToast({ title: '请在支付宝小程序支付', icon: 'none' })

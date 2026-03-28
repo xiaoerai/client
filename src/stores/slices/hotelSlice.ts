@@ -1,12 +1,5 @@
 import { StateCreator } from 'zustand'
 
-export interface StayInfo {
-  roomName: string
-  dateRange: string
-  nights: number
-  isCheckedIn: boolean
-}
-
 export interface HotelConfig {
   name: string
   subtitle: string
@@ -17,9 +10,6 @@ export interface HotelConfig {
 }
 
 export interface HotelSlice {
-  currentStay: StayInfo | null
-  setCurrentStay: (stay: StayInfo | null) => void
-
   hotelConfig: HotelConfig
   setHotelConfig: (config: Partial<HotelConfig>) => void
 }
@@ -34,9 +24,6 @@ const defaultHotelConfig: HotelConfig = {
 }
 
 export const createHotelSlice: StateCreator<HotelSlice> = (set) => ({
-  currentStay: null,
-  setCurrentStay: (stay) => set({ currentStay: stay }),
-
   hotelConfig: defaultHotelConfig,
   setHotelConfig: (config) =>
     set((state) => ({

@@ -13,7 +13,7 @@ export type AppState = UserSlice & OrderSlice & CheckinSlice & HotelSlice & Lang
 // 重新导出类型，方便外部引用
 export type { Order, SelectedOrder } from './slices/orderSlice'
 export type { CheckinRecord } from './slices/checkinSlice'
-export type { StayInfo, HotelConfig } from './slices/hotelSlice'
+export type { HotelConfig } from './slices/hotelSlice'
 export type { Language } from './slices/languageSlice'
 
 // Taro Storage 适配器
